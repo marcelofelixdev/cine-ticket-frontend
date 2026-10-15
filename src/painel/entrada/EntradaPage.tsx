@@ -4,6 +4,7 @@ import { diaMes, hora, NOME_DO_TIPO } from '../../lib/formato'
 import { mensagemDeErro } from '../../lib/erros'
 import styles from '../Painel.module.css'
 import entrada from './Entrada.module.css'
+import { LeitorPelaCamera } from './LeitorPelaCamera'
 import { validarIngresso, type EntradaLiberada } from './entradaApi'
 
 type Resultado =
@@ -24,9 +25,17 @@ const TITULO_DO_ERRO: Record<number, string> = {
   422: 'Fora do horário',
 }
 
+/** Vibração no celular: curta quando libera, longa e dupla quando recusa. */
+const VIBRACAO_LIBERADA = [80]
+const VIBRACAO_RECUSADA = [250, 100, 250]
+
+function vibrar(padrao: number[]) {
+  navigator.vibrate?.(padrao)
+}
+
 /**
- * Porta da sala: o leitor de QR (que funciona como teclado) ou o funcionário digita o
- * código, a API confere assinatura, situação e horário e marca o ingresso como usado.
+ * Porta da sala: o leitor de QR (que funciona como teclado), a câmera ou o funcionário
+ * digita o código, a API confere assinatura, situação e horário e marca o ingresso como usado.
  */
 export function EntradaPage() {
   const [codigo, setCodigo] = useState('')
@@ -35,25 +44,33 @@ export function EntradaPage() {
   const [historico, setHistorico] = useState<Registro[]>([])
   const campo = useRef<HTMLInputElement>(null)
 
-  async function validar(event: FormEvent<HTMLFormElement>) {
+  function validarDigitado(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const qr = codigo.trim()
-    if (!qr) {
-      return
+    if (qr) {
+      void conferir(qr, 'teclado')
     }
+  }
+
+  /** Manda o código à API. Na leitura pela câmera o campo não ganha foco (no celular abriria o teclado). */
+  async function conferir(qr: string, origem: 'teclado' | 'camera') {
     setValidando(true)
     try {
       const ingresso = await validarIngresso(qr)
       setResultado({ tipo: 'liberada', ingresso })
       registrar(`${ingresso.cadeiraAssento} · ${ingresso.filmeTitulo}`, true)
+      vibrar(VIBRACAO_LIBERADA)
     } catch (e) {
       const titulo = e instanceof ApiError ? (TITULO_DO_ERRO[e.status] ?? 'Erro') : 'Erro'
       setResultado({ tipo: 'recusada', titulo, mensagem: mensagemDeErro(e) })
       registrar(titulo, false)
+      vibrar(VIBRACAO_RECUSADA)
     } finally {
       setValidando(false)
-      setCodigo('')
-      campo.current?.focus()
+      if (origem === 'teclado') {
+        setCodigo('')
+        campo.current?.focus()
+      }
     }
   }
 
@@ -68,7 +85,7 @@ export function EntradaPage() {
         Entrada · validar ingresso
       </h1>
       <div className={styles.janelaCorpo}>
-        <form className={entrada.leitura} onSubmit={validar}>
+        <form className={entrada.leitura} onSubmit={validarDigitado}>
           <label className={styles.campo}>
             Código do QR
             <input
@@ -86,6 +103,7 @@ export function EntradaPage() {
           </button>
         </form>
         <p className={styles.dica}>O leitor de QR digita o código e aperta Enter sozinho. Também dá para colar o código.</p>
+        <LeitorPelaCamera onLer={(qr) => conferir(qr, 'camera')} />
 
         <div aria-live="polite">
           {resultado?.tipo === 'liberada' && <Liberada ingresso={resultado.ingresso} />}
