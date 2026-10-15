@@ -69,6 +69,11 @@ export interface PedidoDeFilme {
 
 export type SituacaoNaProgramacao = 'AGUARDANDO_GERENTE' | 'ATIVO'
 
+export const NOME_DA_SITUACAO_NA_PROGRAMACAO: Record<SituacaoNaProgramacao, string> = {
+  AGUARDANDO_GERENTE: 'Aguardando o gerente',
+  ATIVO: 'Em cartaz',
+}
+
 // ---------- Ingressos ----------
 
 export interface IngressoDoPainel {

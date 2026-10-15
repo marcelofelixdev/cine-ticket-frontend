@@ -2,6 +2,11 @@ import type { ComponentType } from 'react'
 import { Navigate, useParams } from 'react-router'
 import { useAuth } from '../auth/AuthContext'
 import { menuDoPainel, papelDoPainel, type PapelPainel } from '../auth/papeis'
+import { CinemasPage } from './admin/CinemasPage'
+import { EquipePage as EquipeDaRedePage } from './admin/EquipePage'
+import { FilmesPage } from './admin/FilmesPage'
+import { IngressosPage as IngressosDaRedePage } from './admin/IngressosPage'
+import { PedidosPage as PedidosDaRedePage } from './admin/PedidosPage'
 import { CaixaPage } from './caixa/CaixaPage'
 import { DevolucoesPage } from './caixa/DevolucoesPage'
 import { EntradaPage } from './entrada/EntradaPage'
@@ -27,7 +32,13 @@ const PAGINAS: Record<PapelPainel, Partial<Record<string, ComponentType>>> = {
     ingressos: IngressosPage,
     equipe: EquipePage,
   },
-  ADMIN: {},
+  ADMIN: {
+    pedidos: PedidosDaRedePage,
+    filmes: FilmesPage,
+    cinemas: CinemasPage,
+    equipe: EquipeDaRedePage,
+    ingressos: IngressosDaRedePage,
+  },
 }
 
 /** Seção do painel, só se ela estiver no menu do papel do usuário. */

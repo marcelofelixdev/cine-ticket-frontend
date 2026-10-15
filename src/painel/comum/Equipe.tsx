@@ -1,4 +1,5 @@
 import styles from '../Painel.module.css'
+import { CampoDeTexto } from './CampoDeTexto'
 import { NOME_DO_PAPEL_DA_EQUIPE, type DadosDeAcesso, type MembroDaEquipe } from './painelApi'
 
 interface TabelaProps {
@@ -48,26 +49,22 @@ interface CamposProps {
 export function CamposDeAcesso({ dados, onMudar, erros }: CamposProps) {
   return (
     <>
-      <label className={styles.campo}>
-        Nome
-        <input value={dados.nome} onChange={(e) => onMudar({ ...dados, nome: e.target.value })} />
-        {erros.nome && <span className={styles.erroDoCampo}>{erros.nome}</span>}
-      </label>
-      <label className={styles.campo}>
-        E-mail
-        <input type="email" value={dados.email} onChange={(e) => onMudar({ ...dados, email: e.target.value })} />
-        {erros.email && <span className={styles.erroDoCampo}>{erros.email}</span>}
-      </label>
-      <label className={styles.campo}>
-        Senha inicial
-        <input
-          type="password"
-          autoComplete="new-password"
-          value={dados.senha}
-          onChange={(e) => onMudar({ ...dados, senha: e.target.value })}
-        />
-        {erros.senha && <span className={styles.erroDoCampo}>{erros.senha}</span>}
-      </label>
+      <CampoDeTexto rotulo="Nome" valor={dados.nome} onMudar={(nome) => onMudar({ ...dados, nome })} erro={erros.nome} />
+      <CampoDeTexto
+        rotulo="E-mail"
+        type="email"
+        valor={dados.email}
+        onMudar={(email) => onMudar({ ...dados, email })}
+        erro={erros.email}
+      />
+      <CampoDeTexto
+        rotulo="Senha inicial"
+        type="password"
+        autoComplete="new-password"
+        valor={dados.senha}
+        onMudar={(senha) => onMudar({ ...dados, senha })}
+        erro={erros.senha}
+      />
     </>
   )
 }

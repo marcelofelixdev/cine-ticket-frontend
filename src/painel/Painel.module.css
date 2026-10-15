@@ -138,7 +138,8 @@
   font-size: 13px;
 }
 
-.campo input {
+.campo input,
+.campo textarea {
   font: inherit;
   min-height: 34px;
   padding: 5px 8px;
@@ -344,4 +345,19 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
+}
+
+.grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 8px 10px;
+  font-size: 13px;
+  border: 1px solid var(--painel-borda-suave);
+}
+
+.grupo legend {
+  padding: 0 4px;
+  font-weight: 700;
 }
