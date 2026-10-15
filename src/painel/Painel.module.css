@@ -266,3 +266,82 @@
   border-color: #7a1a14;
   box-shadow: none;
 }
+
+.colunas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.colunaLarga {
+  flex: 999 1 640px;
+  min-width: 0;
+}
+
+.colunaEstreita {
+  flex: 1 1 300px;
+  min-width: 280px;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.duasColunas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.campo select {
+  font: inherit;
+  min-height: 34px;
+  padding: 4px 6px;
+  background: var(--branco);
+  border: 1px solid var(--painel-borda);
+}
+
+.barra {
+  display: inline-block;
+  width: 90px;
+  height: 10px;
+  margin-right: 6px;
+  vertical-align: middle;
+  background: var(--branco);
+  border: 1px solid var(--texto-suave);
+}
+
+.barra > span {
+  display: block;
+  height: 100%;
+  background: var(--verde);
+}
+
+.barraCheia > span {
+  background: var(--erro);
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.poster {
+  width: 36px;
+  height: 54px;
+  object-fit: cover;
+  background: var(--cinza-claro);
+  display: block;
+}
+
+.paginacao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}

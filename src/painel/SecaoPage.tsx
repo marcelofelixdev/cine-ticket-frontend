@@ -5,6 +5,11 @@ import { menuDoPainel, papelDoPainel, type PapelPainel } from '../auth/papeis'
 import { CaixaPage } from './caixa/CaixaPage'
 import { DevolucoesPage } from './caixa/DevolucoesPage'
 import { EntradaPage } from './entrada/EntradaPage'
+import { EquipePage } from './gerente/EquipePage'
+import { IngressosPage } from './gerente/IngressosPage'
+import { PedidosPage } from './gerente/PedidosPage'
+import { ProgramacaoPage } from './gerente/ProgramacaoPage'
+import { SessoesPage } from './gerente/SessoesPage'
 import styles from './Painel.module.css'
 
 /**
@@ -13,7 +18,15 @@ import styles from './Painel.module.css'
  */
 const PAGINAS: Record<PapelPainel, Partial<Record<string, ComponentType>>> = {
   STAFF: { caixa: CaixaPage, devolucoes: DevolucoesPage, entrada: EntradaPage },
-  MANAGER: { caixa: CaixaPage, devolucoes: DevolucoesPage },
+  MANAGER: {
+    caixa: CaixaPage,
+    devolucoes: DevolucoesPage,
+    sessoes: SessoesPage,
+    programacao: ProgramacaoPage,
+    pedidos: PedidosPage,
+    ingressos: IngressosPage,
+    equipe: EquipePage,
+  },
   ADMIN: {},
 }
 

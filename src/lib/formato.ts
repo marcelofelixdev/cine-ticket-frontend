@@ -1,4 +1,4 @@
-import type { Audio, FormaPagamento, Formato, TipoIngresso } from './tipos'
+import type { Audio, CanalVenda, FormaPagamento, Formato, StatusIngresso, TipoIngresso } from './tipos'
 
 const MOEDA = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
 
@@ -64,4 +64,35 @@ export function ehMeia(tipo: TipoIngresso): boolean {
 /** Preço de um tipo de ingresso com os valores que a API manda na sessão (valorBase e valorMeia). */
 export function precoDoTipo(sessao: { valorBase: number; valorMeia: number }, tipo: TipoIngresso): number {
   return ehMeia(tipo) ? sessao.valorMeia : sessao.valorBase
+}
+
+export const NOME_DO_STATUS: Record<StatusIngresso, string> = {
+  PENDING: 'Aguardando pagamento',
+  APPROVED: 'Aprovado',
+  CANCELLED: 'Cancelado',
+  EMERGENCY_CANCELLED: 'Cancelado pelo cinema',
+  EXPIRED: 'Expirado',
+}
+
+export const NOME_DO_CANAL: Record<CanalVenda, string> = {
+  ONLINE: 'Online',
+  BALCAO: 'Balcão',
+}
+
+const NOME_DO_AUDIO: Record<Audio, string> = {
+  DUBLADO: 'Dublado',
+  LEGENDADO: 'Legendado',
+  NACIONAL: 'Nacional',
+}
+
+export function nomeDoAudio(audio: Audio): string {
+  return NOME_DO_AUDIO[audio]
+}
+
+/** 166 → "2h46". */
+export function duracao(minutos: number | null): string {
+  if (!minutos) {
+    return '—'
+  }
+  return `${Math.floor(minutos / 60)}h${String(minutos % 60).padStart(2, '0')}`
 }
