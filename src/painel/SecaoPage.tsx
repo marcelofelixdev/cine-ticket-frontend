@@ -4,12 +4,14 @@ import { useAuth } from '../auth/AuthContext'
 import { menuDoPainel, papelDoPainel } from '../auth/papeis'
 import { CaixaPage } from './caixa/CaixaPage'
 import { DevolucoesPage } from './caixa/DevolucoesPage'
+import { EntradaPage } from './entrada/EntradaPage'
 import styles from './Painel.module.css'
 
 /** Seções já prontas; as demais mostram "Em construção" até os itens 8.3 e 8.4. */
 const PAGINAS: Partial<Record<string, ComponentType>> = {
   caixa: CaixaPage,
   devolucoes: DevolucoesPage,
+  entrada: EntradaPage,
 }
 
 /** Seção do painel, só se ela estiver no menu do papel do usuário. */
