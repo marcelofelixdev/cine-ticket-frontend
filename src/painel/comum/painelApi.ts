@@ -4,6 +4,14 @@ import type { CanalVenda, FormaPagamento, StatusIngresso, TipoIngresso } from '.
 
 /** Tipos e chamadas que o gerente e o admin usam com caminhos diferentes da API. */
 
+/** Acrescenta ?cinemaId= nas rotas do gerente quando o admin está agindo num cinema. */
+export function noCinema(caminho: string, cinemaId: number | null): string {
+  if (cinemaId === null) {
+    return caminho
+  }
+  return `${caminho}${caminho.includes('?') ? '&' : '?'}cinemaId=${cinemaId}`
+}
+
 // ---------- Resumo da sessão ----------
 
 /** GET /manager/sessions/{id}/summary e GET /admin/sessions/{id}/summary. */

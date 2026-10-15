@@ -3,19 +3,21 @@ import { mensagemDeErro } from '../../lib/erros'
 import { dataCompleta, duracao } from '../../lib/formato'
 import { useCarregar } from '../../lib/useCarregar'
 import { ConfirmarEmDoisPassos } from '../comum/ConfirmarEmDoisPassos'
+import { useCinemaEscolhido } from '../escopo'
 import styles from '../Painel.module.css'
 import { confirmarFilme, programacao, type ItemDaProgramacao } from './gerenteApi'
 
 /** Filmes do cinema: os enviados pelo admin esperam a confirmação do gerente para entrar em cartaz. */
 export function ProgramacaoPage() {
-  const itens = useCarregar((signal) => programacao(signal), 'programacao')
+  const cinemaId = useCinemaEscolhido()
+  const itens = useCarregar((signal) => programacao(cinemaId, signal), 'programacao')
   const [mensagem, setMensagem] = useState<string | null>(null)
   const [erro, setErro] = useState<string | null>(null)
 
   async function confirmar(item: ItemDaProgramacao) {
     setErro(null)
     try {
-      await confirmarFilme(item.movieId)
+      await confirmarFilme(item.movieId, cinemaId)
       setMensagem(`${item.titulo} entrou na programação. Já dá para criar sessões.`)
       itens.recarregar()
     } catch (e) {

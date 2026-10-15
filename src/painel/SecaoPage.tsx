@@ -1,7 +1,6 @@
 import type { ComponentType } from 'react'
 import { Navigate, useParams } from 'react-router'
-import { useAuth } from '../auth/AuthContext'
-import { menuDoPainel, papelDoPainel, type PapelPainel } from '../auth/papeis'
+import { menuDoPainel, type VisaoDoPainel } from '../auth/papeis'
 import { CinemasPage } from './admin/CinemasPage'
 import { EquipePage as EquipeDaRedePage } from './admin/EquipePage'
 import { FilmesPage } from './admin/FilmesPage'
@@ -15,13 +14,14 @@ import { IngressosPage } from './gerente/IngressosPage'
 import { PedidosPage } from './gerente/PedidosPage'
 import { ProgramacaoPage } from './gerente/ProgramacaoPage'
 import { SessoesPage } from './gerente/SessoesPage'
+import { useEscopo } from './escopo'
 import styles from './Painel.module.css'
 
 /**
  * Página de cada seção, por papel: a mesma seção (ex.: "pedidos") é uma tela para o
  * gerente e outra para o admin. Seções sem página mostram "Em construção".
  */
-const PAGINAS: Record<PapelPainel, Partial<Record<string, ComponentType>>> = {
+const PAGINAS: Record<VisaoDoPainel, Partial<Record<string, ComponentType>>> = {
   STAFF: { caixa: CaixaPage, devolucoes: DevolucoesPage, entrada: EntradaPage },
   MANAGER: {
     caixa: CaixaPage,
@@ -39,12 +39,14 @@ const PAGINAS: Record<PapelPainel, Partial<Record<string, ComponentType>>> = {
     equipe: EquipeDaRedePage,
     ingressos: IngressosDaRedePage,
   },
+  // Admin dentro de um cinema: as mesmas telas do gerente, com o cinema escolhido.
+  ADMIN_NO_CINEMA: { sessoes: SessoesPage, programacao: ProgramacaoPage, ingressos: IngressosPage },
 }
 
-/** Seção do painel, só se ela estiver no menu do papel do usuário. */
+/** Seção do painel, só se ela estiver no menu do que o usuário está vendo. */
 export function SecaoPage() {
   const { secao } = useParams()
-  const papel = usePapel()
+  const papel = useEscopo().visao
   const item = papel ? menuDoPainel(papel).find((i) => i.secao === secao) : undefined
 
   if (!papel || !item) {
@@ -68,12 +70,7 @@ export function SecaoPage() {
 
 /** Abre a primeira seção do menu do usuário. */
 export function PainelInicio() {
-  const papel = usePapel()
+  const papel = useEscopo().visao
   const primeira = papel ? menuDoPainel(papel)[0] : undefined
   return primeira ? <Navigate to={`/painel/${primeira.secao}`} replace /> : null
-}
-
-function usePapel(): PapelPainel | null {
-  const { sessao } = useAuth()
-  return sessao.status === 'logado' ? papelDoPainel(sessao.usuario.roles) : null
 }

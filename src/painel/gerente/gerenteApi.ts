@@ -7,7 +7,11 @@ import type {
   ResumoDaSessao,
   SituacaoNaProgramacao,
 } from '../comum/painelApi'
+import { noCinema } from '../comum/painelApi'
 import type { SessaoDoDia } from '../comum/sessaoDoDia'
+
+// As rotas de operação do cinema recebem `cinemaId` (null para o gerente: a API usa o dele;
+// o admin manda o cinema escolhido no cabeçalho).
 
 // ---------- Sessões ----------
 
@@ -26,24 +30,24 @@ export interface NovaSessao {
   audio: Audio
 }
 
-export function sessoesDoGerente(data: string, signal?: AbortSignal): Promise<SessaoDoDia[]> {
-  return apiFetch(`/manager/sessions?date=${data}`, { signal })
+export function sessoesDoGerente(data: string, cinemaId: number | null, signal?: AbortSignal): Promise<SessaoDoDia[]> {
+  return apiFetch(noCinema(`/manager/sessions?date=${data}`, cinemaId), { signal })
 }
 
-export function resumoDaSessao(id: number, signal?: AbortSignal): Promise<ResumoDaSessao> {
-  return apiFetch(`/manager/sessions/${id}/summary`, { signal })
+export function resumoDaSessao(id: number, cinemaId: number | null, signal?: AbortSignal): Promise<ResumoDaSessao> {
+  return apiFetch(noCinema(`/manager/sessions/${id}/summary`, cinemaId), { signal })
 }
 
-export function cancelarSessao(id: number): Promise<void> {
-  return apiFetch(`/manager/sessions/${id}`, { method: 'DELETE' })
+export function cancelarSessao(id: number, cinemaId: number | null): Promise<void> {
+  return apiFetch(noCinema(`/manager/sessions/${id}`, cinemaId), { method: 'DELETE' })
 }
 
-export function salasDoCinema(signal?: AbortSignal): Promise<Sala[]> {
-  return apiFetch('/manager/rooms', { signal })
+export function salasDoCinema(cinemaId: number | null, signal?: AbortSignal): Promise<Sala[]> {
+  return apiFetch(noCinema('/manager/rooms', cinemaId), { signal })
 }
 
-export function criarSessao(sessao: NovaSessao): Promise<unknown> {
-  return apiFetch('/manager/sessions', { method: 'POST', json: sessao })
+export function criarSessao(sessao: NovaSessao, cinemaId: number | null): Promise<unknown> {
+  return apiFetch(noCinema('/manager/sessions', cinemaId), { method: 'POST', json: sessao })
 }
 
 // ---------- Programação e pedidos ----------
@@ -58,12 +62,12 @@ export interface ItemDaProgramacao {
   confirmadoEm: string | null
 }
 
-export function programacao(signal?: AbortSignal): Promise<ItemDaProgramacao[]> {
-  return apiFetch('/manager/programacao', { signal })
+export function programacao(cinemaId: number | null, signal?: AbortSignal): Promise<ItemDaProgramacao[]> {
+  return apiFetch(noCinema('/manager/programacao', cinemaId), { signal })
 }
 
-export function confirmarFilme(movieId: number): Promise<ItemDaProgramacao> {
-  return apiFetch(`/manager/programacao/${movieId}/confirm`, { method: 'POST' })
+export function confirmarFilme(movieId: number, cinemaId: number | null): Promise<ItemDaProgramacao> {
+  return apiFetch(noCinema(`/manager/programacao/${movieId}/confirm`, cinemaId), { method: 'POST' })
 }
 
 export function pedidosDoCinema(signal?: AbortSignal): Promise<PedidoDeFilme[]> {
@@ -76,8 +80,8 @@ export function pedirFilme(tmdbId: number): Promise<PedidoDeFilme> {
 
 // ---------- Ingressos ----------
 
-export function cancelarVenda(id: number): Promise<unknown> {
-  return apiFetch(`/manager/tickets/${id}/cancel`, { method: 'POST' })
+export function cancelarVenda(id: number, cinemaId: number | null): Promise<unknown> {
+  return apiFetch(noCinema(`/manager/tickets/${id}/cancel`, cinemaId), { method: 'POST' })
 }
 
 // ---------- Equipe ----------

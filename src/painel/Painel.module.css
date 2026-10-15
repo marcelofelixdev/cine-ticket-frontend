@@ -361,3 +361,12 @@
   padding: 0 4px;
   font-weight: 700;
 }
+
+.seletorDeCinema {
+  font: inherit;
+  min-height: 28px;
+  padding: 2px 4px;
+  color: var(--grafite);
+  background: var(--branco);
+  border: 1px solid var(--verde-claro);
+}

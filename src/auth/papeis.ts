@@ -14,12 +14,22 @@ export function papelDoPainel(roles: string[]): PapelPainel | null {
   return ORDEM.find((papel) => roles.includes(`ROLE_${papel}`)) ?? null
 }
 
+/**
+ * O que o painel mostra: o papel do usuário ou, para o admin que escolheu um cinema no
+ * cabeçalho, as telas de operação daquele cinema.
+ */
+export type VisaoDoPainel = PapelPainel | 'ADMIN_NO_CINEMA'
+
+export function visaoDoPainel(papel: PapelPainel, cinemaEscolhido: number | null): VisaoDoPainel {
+  return papel === 'ADMIN' && cinemaEscolhido !== null ? 'ADMIN_NO_CINEMA' : papel
+}
+
 export interface ItemDoMenu {
   secao: string
   rotulo: string
 }
 
-const MENU: Record<PapelPainel, ItemDoMenu[]> = {
+const MENU: Record<VisaoDoPainel, ItemDoMenu[]> = {
   STAFF: [
     { secao: 'caixa', rotulo: 'Caixa' },
     { secao: 'devolucoes', rotulo: 'Devoluções' },
@@ -41,8 +51,13 @@ const MENU: Record<PapelPainel, ItemDoMenu[]> = {
     { secao: 'equipe', rotulo: 'Equipe' },
     { secao: 'ingressos', rotulo: 'Ingressos da rede' },
   ],
+  ADMIN_NO_CINEMA: [
+    { secao: 'sessoes', rotulo: 'Sessões' },
+    { secao: 'programacao', rotulo: 'Programação' },
+    { secao: 'ingressos', rotulo: 'Ingressos' },
+  ],
 }
 
-export function menuDoPainel(papel: PapelPainel): ItemDoMenu[] {
-  return MENU[papel]
+export function menuDoPainel(visao: VisaoDoPainel): ItemDoMenu[] {
+  return MENU[visao]
 }

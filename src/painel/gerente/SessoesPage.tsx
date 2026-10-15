@@ -8,6 +8,7 @@ import { ConfirmarEmDoisPassos } from '../comum/ConfirmarEmDoisPassos'
 import { JanelaDeResumo } from '../comum/JanelaDeResumo'
 import { NavegacaoDeDia } from '../comum/NavegacaoDeDia'
 import type { SessaoDoDia } from '../comum/sessaoDoDia'
+import { useCinemaEscolhido } from '../escopo'
 import styles from '../Painel.module.css'
 import {
   cancelarSessao,
@@ -20,7 +21,8 @@ import {
 
 export function SessoesPage() {
   const [dia, setDia] = useState(hoje())
-  const sessoes = useCarregar((signal) => sessoesDoGerente(dia, signal), dia)
+  const cinemaId = useCinemaEscolhido()
+  const sessoes = useCarregar((signal) => sessoesDoGerente(dia, cinemaId, signal), dia)
   const [resumoId, setResumoId] = useState<number | null>(null)
   const [mensagem, setMensagem] = useState<string | null>(null)
   const [erro, setErro] = useState<string | null>(null)
@@ -34,7 +36,7 @@ export function SessoesPage() {
     setErro(null)
     setMensagem(null)
     try {
-      await cancelarSessao(sessao.id)
+      await cancelarSessao(sessao.id, cinemaId)
       setMensagem(
         `Sessão das ${hora(sessao.horarioInicio)} de ${sessao.movieTitulo} cancelada. ` +
           'Compras online foram estornadas e as vendas de balcão foram para Devoluções.',
@@ -79,7 +81,7 @@ export function SessoesPage() {
             </p>
           </div>
         </section>
-        {resumoId !== null && <JanelaDeResumo id={resumoId} buscar={resumoDaSessao} />}
+        {resumoId !== null && <JanelaDeResumo id={resumoId} buscar={(id, signal) => resumoDaSessao(id, cinemaId, signal)} />}
       </div>
       <div className={styles.colunaEstreita}>
         <FormularioDeSessao
@@ -175,8 +177,9 @@ interface FormularioProps {
 }
 
 function FormularioDeSessao({ diaInicial, onCriada }: FormularioProps) {
-  const filmes = useCarregar((signal) => programacao(signal), 'programacao')
-  const salas = useCarregar((signal) => salasDoCinema(signal), 'salas')
+  const cinemaId = useCinemaEscolhido()
+  const filmes = useCarregar((signal) => programacao(cinemaId, signal), 'programacao')
+  const salas = useCarregar((signal) => salasDoCinema(cinemaId, signal), 'salas')
   const [filme, setFilme] = useState('')
   const [sala, setSala] = useState('')
   const [dia, setDia] = useState(diaInicial)
@@ -205,7 +208,7 @@ function FormularioDeSessao({ diaInicial, onCriada }: FormularioProps) {
         valorBase: Number(preco.replace(',', '.')),
         formato,
         audio,
-      })
+      }, cinemaId)
       setCriada(`Sessão criada para ${dataCompleta(dia)} às ${inicio}.`)
       onCriada(dia)
     } catch (e) {

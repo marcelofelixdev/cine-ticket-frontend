@@ -28,6 +28,7 @@ function abrir(caminho: string) {
 afterEach(() => {
   setAccessToken(null)
   vi.unstubAllGlobals()
+  sessionStorage.clear()
 })
 
 describe('painel', () => {
@@ -82,7 +83,39 @@ describe('painel', () => {
     abrir('/painel')
 
     expect(await screen.findByRole('heading', { name: 'Pedidos de filme' })).toBeInTheDocument()
-    expect(screen.getByText('Painel · Rede')).toBeInTheDocument()
+    expect(screen.getByLabelText('Cinema em que você está')).toHaveValue('')
+  })
+
+  it('admin entra num cinema: abas do cinema e chamadas com o cinemaId', async () => {
+    const api = fakeApi({
+      'POST /auth/refresh': token,
+      'GET /users/me': () => json(usuario(['ROLE_ADMIN'], null)),
+      'GET /cinemas': () =>
+        json({
+          content: [{ id: 2, nome: 'Cine Copacabana', cnpj: '1', endereco: 'Rua', cidade: 'Rio de Janeiro', uf: 'RJ' }],
+          page: { size: 100, number: 0, totalElements: 1, totalPages: 1 },
+        }),
+      'GET /admin/movie-requests': () => json([]),
+      'GET /manager/sessions': () => json([]),
+      'GET /manager/programacao': () => json([]),
+      'GET /manager/rooms': () => json([]),
+    })
+
+    abrir('/painel')
+    await screen.findByRole('option', { name: 'Cine Copacabana' })
+    await userEvent.selectOptions(screen.getByLabelText('Cinema em que você está'), '2')
+
+    const abas = screen.getByRole('navigation', { name: 'Painel' })
+    expect(abas).toHaveTextContent('SessõesProgramaçãoIngressos')
+    await userEvent.click(screen.getByRole('link', { name: 'Sessões' }))
+    expect(await screen.findByText('Nenhuma sessão neste dia.', { exact: false })).toBeInTheDocument()
+    const urls = api.mock.calls.map(([url]) => String(url))
+    expect(urls.some((u) => u.includes('/manager/sessions?date=') && u.endsWith('&cinemaId=2'))).toBe(true)
+    expect(urls).toContain('/api/v1/manager/rooms?cinemaId=2')
+
+    // Voltar para a rede devolve as abas do admin.
+    await userEvent.selectOptions(screen.getByLabelText('Cinema em que você está'), '')
+    expect(await screen.findByRole('heading', { name: 'Pedidos de filme' })).toBeInTheDocument()
   })
 
   it('seção de outro papel volta para o início do painel', async () => {

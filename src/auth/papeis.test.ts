@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { menuDoPainel, papelDoPainel } from './papeis'
+import { menuDoPainel, papelDoPainel, visaoDoPainel } from './papeis'
 
 describe('papelDoPainel', () => {
   it('escolhe o papel de maior acesso', () => {
@@ -25,5 +25,14 @@ describe('menuDoPainel', () => {
 
   it('admin cuida da rede e não usa o caixa', () => {
     expect(secoes('ADMIN')).not.toContain('caixa')
+  })
+})
+
+describe('visaoDoPainel', () => {
+  it('só o admin troca de visão ao escolher um cinema', () => {
+    expect(visaoDoPainel('ADMIN', null)).toBe('ADMIN')
+    expect(visaoDoPainel('ADMIN', 2)).toBe('ADMIN_NO_CINEMA')
+    expect(visaoDoPainel('MANAGER', 2)).toBe('MANAGER')
+    expect(menuDoPainel('ADMIN_NO_CINEMA').map((i) => i.secao)).toEqual(['sessoes', 'programacao', 'ingressos'])
   })
 })
