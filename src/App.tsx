@@ -1,8 +1,13 @@
+import { BrowserRouter } from 'react-router'
+import { AppRoutes } from './AppRoutes'
+import { AuthProvider } from './auth/AuthProvider'
+
 export default function App() {
   return (
-    <main>
-      <h1>CineTicket</h1>
-      <p>Frontend em construção.</p>
-    </main>
+    <BrowserRouter>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
