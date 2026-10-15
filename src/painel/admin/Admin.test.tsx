@@ -154,6 +154,9 @@ describe('cinemas e salas', () => {
     expect(await within(form).findByText('Sala 3 do Cine Copacabana salva.')).toBeInTheDocument()
     expect(ultimoCorpo(api, 'POST /rooms')).toEqual({ nome: 'Sala 3', capacidade: 96, cinemaId: 2, cadeirasPorFila: 12, corredores: [3, 9] })
     expect(urls(api).some((u) => u.includes('/rooms?page=0&size=20&sort=cinema.nome,asc&sort=nome,asc'))).toBe(true)
+
+    await userEvent.selectOptions(screen.getByLabelText('Mostrar o cinema'), '2')
+    expect(urls(api).at(-1)).toContain('/rooms?page=0&size=20&sort=cinema.nome,asc&sort=nome,asc&cinemaId=2')
   })
 
   it('mostra o conflito da API ao excluir cinema com sessões', async () => {

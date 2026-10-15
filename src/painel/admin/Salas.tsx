@@ -18,7 +18,11 @@ interface Props {
 export function Salas({ versaoDosCinemas }: Props) {
   const [pagina, setPagina] = useState(0)
   const [versao, setVersao] = useState(0)
-  const lista = useCarregar((signal) => salas(pagina, signal), `${pagina}-${versao}-${versaoDosCinemas}`)
+  const [filtro, setFiltro] = useState('')
+  const lista = useCarregar(
+    (signal) => salas(pagina, filtro, signal),
+    `${pagina}-${filtro}-${versao}-${versaoDosCinemas}`,
+  )
   const rede = useCarregar((signal) => todosOsCinemas(signal), `cinemas-${versaoDosCinemas}`)
   const [editando, setEditando] = useState<SalaDaRede | null>(null)
   const acao = useAcao()
@@ -30,6 +34,23 @@ export function Salas({ versaoDosCinemas }: Props) {
           Salas
         </h2>
         <div className={styles.janelaCorpo}>
+          <label className={styles.campo} style={{ maxWidth: 260 }}>
+            Mostrar o cinema
+            <select
+              value={filtro}
+              onChange={(e) => {
+                setFiltro(e.target.value)
+                setPagina(0)
+              }}
+            >
+              <option value="">Todos</option>
+              {rede.dados?.content.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.nome}
+                </option>
+              ))}
+            </select>
+          </label>
           <Avisos sucesso={acao.sucesso} erro={acao.erro} />
           {lista.erro && <p className={styles.alerta}>{lista.erro}</p>}
           {lista.dados?.content.length === 0 && <p>Nenhuma sala cadastrada.</p>}

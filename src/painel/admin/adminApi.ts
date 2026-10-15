@@ -138,8 +138,10 @@ export function excluirCinema(id: number): Promise<void> {
   return apiFetch(`/cinemas/${id}`, { method: 'DELETE' })
 }
 
-export function salas(pagina: number, signal?: AbortSignal): Promise<Pagina<SalaDaRede>> {
-  return apiFetch(`/rooms?page=${pagina}&size=20&sort=cinema.nome,asc&sort=nome,asc`, { signal })
+/** Salas de um cinema ou, sem cinemaId, de todos (ordenadas por cinema). */
+export function salas(pagina: number, cinemaId: string, signal?: AbortSignal): Promise<Pagina<SalaDaRede>> {
+  const filtro = cinemaId ? `&cinemaId=${cinemaId}` : ''
+  return apiFetch(`/rooms?page=${pagina}&size=20&sort=cinema.nome,asc&sort=nome,asc${filtro}`, { signal })
 }
 
 export function criarSala(dados: DadosDaSala): Promise<SalaDaRede> {
