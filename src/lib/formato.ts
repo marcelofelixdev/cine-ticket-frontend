@@ -33,6 +33,13 @@ export function somarDias(data: string, dias: number): string {
   return d.toLocaleDateString('sv-SE')
 }
 
+const DIAS_DA_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+
+/** "2026-10-16" → "Sex 16". */
+export function diaDaSemana(data: string): string {
+  return `${DIAS_DA_SEMANA[new Date(`${data}T12:00:00`).getDay()]} ${data.slice(8, 10)}`
+}
+
 export const NOME_DO_TIPO: Record<TipoIngresso, string> = {
   INTEIRA: 'Inteira',
   MEIA_ESTUDANTE: 'Meia estudante',
