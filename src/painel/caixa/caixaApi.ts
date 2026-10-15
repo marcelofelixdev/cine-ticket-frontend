@@ -13,9 +13,12 @@ export interface SessaoDoDia {
   formato: Formato
   audio: Audio
   valorBase: number
+  valorMeia: number
   lugares: number
   ocupados: number
   meias: number
+  /** O caixa ainda vende (a API decide: até 30 min depois do início). */
+  vendasAbertas: boolean
 }
 
 export interface MapaDeAssentos {

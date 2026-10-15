@@ -2,10 +2,11 @@ import { describe, expect, it } from 'vitest'
 import { diaMes, hora, precoDoTipo, somarDias, versao } from './formato'
 
 describe('formato', () => {
-  it('meia é a metade, arredondada no centavo como no backend', () => {
-    expect(precoDoTipo(38, 'MEIA_ESTUDANTE')).toBe(19)
-    expect(precoDoTipo(30.05, 'MEIA_IDOSO')).toBe(15.03)
-    expect(precoDoTipo(42, 'INTEIRA')).toBe(42)
+  it('usa os preços que a API manda na sessão', () => {
+    const sessao = { valorBase: 30.05, valorMeia: 15.03 }
+    expect(precoDoTipo(sessao, 'MEIA_ESTUDANTE')).toBe(15.03)
+    expect(precoDoTipo(sessao, 'MEIA_IDOSO')).toBe(15.03)
+    expect(precoDoTipo(sessao, 'INTEIRA')).toBe(30.05)
   })
 
   it('lê a data e hora da API sem mexer no fuso', () => {

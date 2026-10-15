@@ -9,13 +9,10 @@ import caixa from './Caixa.module.css'
 import { mapaDeAssentos, sessoesDoDia, vender, type SessaoDoDia, type Venda } from './caixaApi'
 import { imprimirIngresso } from './imprimir'
 import { MapaDeAssentos } from './MapaDeAssentos'
-import { vendasEncerradas } from './regras'
 import { SessoesDoDia } from './SessoesDoDia'
 
-/** Limite da API por venda. */
+/** Limite da API por venda (BoxOfficeSaleRequestDTO). */
 const MAX_LUGARES = 10
-/** Tamanho mínimo da carteira de estudante (HalfPricePolicy.studentDocument). */
-const MIN_CARTEIRA = 6
 const TIPOS: TipoIngresso[] = ['INTEIRA', 'MEIA_ESTUDANTE', 'MEIA_IDOSO']
 const FORMAS: FormaPagamento[] = ['DINHEIRO', 'PIX', 'CREDITO', 'DEBITO']
 
@@ -90,7 +87,7 @@ export function CaixaPage() {
           {sessoes.dados && (
             <SessoesDoDia sessoes={sessoes.dados} selecionada={sessaoId} onEscolher={escolherSessao} />
           )}
-          <p className={styles.dica}>As vendas fecham 30 minutos depois do início da sessão.</p>
+          <p className={styles.dica}>Sessões com as vendas encerradas aparecem marcadas na lista.</p>
         </div>
       </section>
 
@@ -108,7 +105,7 @@ export function CaixaPage() {
               assentos={mapa.dados.assentos}
               corredores={mapa.dados.corredores}
               selecionados={new Set(lugares.map((l) => l.assento.id))}
-              bloqueado={vendasEncerradas(sessao)}
+              bloqueado={!sessao.vendasAbertas}
               onAlternar={alternar}
             />
           )}
@@ -154,9 +151,8 @@ function FormularioDeVenda({ sessao, meiasRestantes, lugares, onMudarLugares, on
   const [erro, setErro] = useState<string | null>(null)
 
   const meias = lugares.filter((l) => ehMeia(l.tipo)).length
-  const total = lugares.reduce((soma, l) => soma + precoDoTipo(sessao.valorBase, l.tipo), 0)
+  const total = lugares.reduce((soma, l) => soma + precoDoTipo(sessao, l.tipo), 0)
   const passouDaCota = meias > meiasRestantes
-  const faltaCarteira = lugares.some((l) => l.tipo === 'MEIA_ESTUDANTE' && l.documento.trim().length < MIN_CARTEIRA)
 
   function mudar(id: number, mudanca: Partial<LugarEscolhido>) {
     onMudarLugares(lugares.map((l) => (l.assento.id === id ? { ...l, ...mudanca } : l)))
@@ -208,7 +204,7 @@ function FormularioDeVenda({ sessao, meiasRestantes, lugares, onMudarLugares, on
                 </option>
               ))}
             </select>
-            <span className={caixa.preco}>{moeda(precoDoTipo(sessao.valorBase, l.tipo))}</span>
+            <span className={caixa.preco}>{moeda(precoDoTipo(sessao, l.tipo))}</span>
             {l.tipo === 'MEIA_ESTUDANTE' && (
               <input
                 aria-label={`Carteira de estudante do lugar ${rotulo(l.assento)}`}
@@ -227,9 +223,6 @@ function FormularioDeVenda({ sessao, meiasRestantes, lugares, onMudarLugares, on
         <p className={styles.aviso} role="status">
           Esta venda tem {meias} meias, mas só cabem {meiasRestantes}. Troque alguma para inteira.
         </p>
-      )}
-      {faltaCarteira && (
-        <p className={styles.dica}>Informe o número da carteira de cada meia estudante ({MIN_CARTEIRA} caracteres ou mais).</p>
       )}
       <fieldset className={caixa.grupo}>
         <legend>Pagamento</legend>
@@ -251,7 +244,7 @@ function FormularioDeVenda({ sessao, meiasRestantes, lugares, onMudarLugares, on
         <span>Total</span>
         <strong>{moeda(total)}</strong>
       </div>
-      <button type="submit" className={styles.botaoPrincipal} disabled={enviando || passouDaCota || faltaCarteira}>
+      <button type="submit" className={styles.botaoPrincipal} disabled={enviando || passouDaCota}>
         {enviando ? 'Vendendo…' : 'Concluir venda'}
       </button>
     </form>

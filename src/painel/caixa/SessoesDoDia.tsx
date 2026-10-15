@@ -2,7 +2,6 @@ import { hora, versao } from '../../lib/formato'
 import styles from '../Painel.module.css'
 import caixa from './Caixa.module.css'
 import type { SessaoDoDia } from './caixaApi'
-import { vendasEncerradas } from './regras'
 
 interface Props {
   sessoes: SessaoDoDia[]
@@ -39,7 +38,7 @@ export function SessoesDoDia({ sessoes, selecionada, onEscolher }: Props) {
                   {hora(sessao.horarioInicio)}
                 </button>{' '}
                 <span>{versao(sessao.formato, sessao.audio)}</span>
-                {vendasEncerradas(sessao) && <div className={caixa.encerrada}>vendas encerradas</div>}
+                {!sessao.vendasAbertas && <div className={caixa.encerrada}>vendas encerradas</div>}
               </td>
               <td>{sessao.movieTitulo}</td>
               <td>{sessao.roomNome}</td>

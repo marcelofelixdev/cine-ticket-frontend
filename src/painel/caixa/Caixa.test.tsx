@@ -16,9 +16,11 @@ const sessao = {
   formato: '2D',
   audio: 'LEGENDADO',
   valorBase: 38,
+  valorMeia: 19,
   lugares: 4,
   ocupados: 1,
   meias: 0,
+  vendasAbertas: true,
 }
 
 const assentos = [
@@ -78,7 +80,6 @@ describe('caixa', () => {
     await userEvent.click(screen.getByRole('button', { name: 'A-3, livre' }))
     await userEvent.selectOptions(screen.getByLabelText('Tipo do lugar A-3'), 'MEIA_ESTUDANTE')
     const concluir = screen.getByRole('button', { name: 'Concluir venda' })
-    expect(concluir).toBeDisabled() // falta a carteira
     await userEvent.type(screen.getByLabelText('Carteira de estudante do lugar A-3'), '123456789')
     await userEvent.click(screen.getByLabelText('Pix'))
     expect(screen.getByText('R$ 57,00')).toBeInTheDocument()
@@ -164,5 +165,19 @@ describe('devoluções', () => {
     expect(await screen.findByText('Devolução de R$ 15,00 do lugar A-9 registrada.')).toBeInTheDocument()
     expect(await screen.findByText('Nenhuma devolução pendente.')).toBeInTheDocument()
     expect(chamadas(api, 'POST /box-office/refunds/1043/confirm')).toBe(1)
+  })
+})
+
+describe('sessão com vendas encerradas', () => {
+  it('mostra o aviso e trava o mapa, como a API manda', async () => {
+    fakeApi({
+      'GET /box-office/sessions': () => json([{ ...sessao, vendasAbertas: false }]),
+      'GET /sessions/42/seats': () => json(mapa(4)),
+    })
+    render(<CaixaPage />)
+
+    expect(await screen.findByText('vendas encerradas')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: /21:40, Batman/ }))
+    expect(await screen.findByRole('button', { name: 'A-2, livre' })).toBeDisabled()
   })
 })

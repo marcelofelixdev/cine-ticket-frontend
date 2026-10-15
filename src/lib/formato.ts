@@ -56,14 +56,7 @@ export function ehMeia(tipo: TipoIngresso): boolean {
   return tipo !== 'INTEIRA'
 }
 
-/**
- * Preço de um tipo de ingresso a partir do valor da sessão: meia é a metade, com
- * arredondamento para cima no centavo, como o backend (HalfPricePolicy.priceFor).
- * Serve só para mostrar o total antes da venda; o valor cobrado vem da resposta da API.
- */
-export function precoDoTipo(valorSessao: number, tipo: TipoIngresso): number {
-  if (!ehMeia(tipo)) {
-    return valorSessao
-  }
-  return Math.round((valorSessao * 100) / 2 + Number.EPSILON) / 100
+/** Preço de um tipo de ingresso com os valores que a API manda na sessão (valorBase e valorMeia). */
+export function precoDoTipo(sessao: { valorBase: number; valorMeia: number }, tipo: TipoIngresso): number {
+  return ehMeia(tipo) ? sessao.valorMeia : sessao.valorBase
 }
