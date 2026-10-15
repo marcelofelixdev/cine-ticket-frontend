@@ -1,7 +1,7 @@
 import { hora, versao } from '../../lib/formato'
 import styles from '../Painel.module.css'
 import caixa from './Caixa.module.css'
-import type { SessaoDoDia } from './caixaApi'
+import type { SessaoDoDia } from '../comum/sessaoDoDia'
 
 interface Props {
   sessoes: SessaoDoDia[]

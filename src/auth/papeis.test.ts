@@ -20,7 +20,7 @@ describe('menuDoPainel', () => {
   })
 
   it('gerente cuida do próprio cinema e também vende no caixa', () => {
-    expect(secoes('MANAGER')).toEqual(['caixa', 'sessoes', 'programacao', 'pedidos', 'ingressos', 'equipe'])
+    expect(secoes('MANAGER')).toEqual(['caixa', 'devolucoes', 'sessoes', 'programacao', 'pedidos', 'ingressos', 'equipe'])
   })
 
   it('admin cuida da rede e não usa o caixa', () => {

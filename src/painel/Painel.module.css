@@ -236,3 +236,33 @@
   background: #e7f4ec;
   border: 1px solid var(--sucesso);
 }
+
+.navegacaoDia {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.navegacaoDia input {
+  font: inherit;
+  min-height: 32px;
+  padding: 3px 6px;
+  border: 1px solid var(--painel-borda);
+}
+
+.confirmacao {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.botaoPerigo {
+  composes: botao;
+  font-weight: 700;
+  color: var(--branco);
+  background: var(--erro);
+  border-color: #7a1a14;
+  box-shadow: none;
+}

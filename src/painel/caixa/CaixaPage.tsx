@@ -1,12 +1,15 @@
 import { useState, type FormEvent } from 'react'
 import { ApiError } from '../../api/client'
 import { rotulo, type Assento } from '../../lib/assentos'
-import { ehMeia, hoje, hora, moeda, NOME_DA_FORMA, NOME_DO_TIPO, precoDoTipo, somarDias, versao } from '../../lib/formato'
+import { dataCompleta, ehMeia, hoje, hora, moeda, NOME_DA_FORMA, NOME_DO_TIPO, precoDoTipo, versao } from '../../lib/formato'
 import type { FormaPagamento, TipoIngresso } from '../../lib/tipos'
-import { mensagemDeErro, useCarregar } from '../../lib/useCarregar'
+import { mensagemDeErro } from '../../lib/erros'
+import { useCarregar } from '../../lib/useCarregar'
+import { NavegacaoDeDia } from '../comum/NavegacaoDeDia'
 import styles from '../Painel.module.css'
 import caixa from './Caixa.module.css'
-import { mapaDeAssentos, sessoesDoDia, vender, type SessaoDoDia, type Venda } from './caixaApi'
+import type { SessaoDoDia } from '../comum/sessaoDoDia'
+import { mapaDeAssentos, sessoesDoDia, vender, type Venda } from './caixaApi'
 import { imprimirIngresso } from './imprimir'
 import { MapaDeAssentos } from './MapaDeAssentos'
 import { SessoesDoDia } from './SessoesDoDia'
@@ -70,18 +73,10 @@ export function CaixaPage() {
     <div className={caixa.layout}>
       <section className={`${styles.janela} ${caixa.colunaSessoes}`} aria-labelledby="sessoes-dia">
         <h1 id="sessoes-dia" className={styles.janelaTitulo}>
-          Sessões · {dia.split('-').reverse().join('/')}
+          Sessões · {dataCompleta(dia)}
         </h1>
         <div className={styles.janelaCorpo}>
-          <div className={caixa.navegacaoDia}>
-            <button type="button" className={styles.botao} onClick={() => trocarDia(somarDias(dia, -1))}>
-              ◄ Dia anterior
-            </button>
-            <input type="date" aria-label="Dia" value={dia} onChange={(e) => e.target.value && trocarDia(e.target.value)} />
-            <button type="button" className={styles.botao} onClick={() => trocarDia(somarDias(dia, 1))}>
-              Próximo dia ►
-            </button>
-          </div>
+          <NavegacaoDeDia dia={dia} onTrocar={trocarDia} />
           {sessoes.erro && <p className={styles.alerta}>{sessoes.erro}</p>}
           {sessoes.carregando && !sessoes.dados && <p className={styles.dica}>Carregando…</p>}
           {sessoes.dados && (

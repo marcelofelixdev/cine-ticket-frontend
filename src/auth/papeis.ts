@@ -27,6 +27,7 @@ const MENU: Record<PapelPainel, ItemDoMenu[]> = {
   ],
   MANAGER: [
     { secao: 'caixa', rotulo: 'Caixa' },
+    { secao: 'devolucoes', rotulo: 'Devoluções' },
     { secao: 'sessoes', rotulo: 'Sessões' },
     { secao: 'programacao', rotulo: 'Programação' },
     { secao: 'pedidos', rotulo: 'Pedidos de filme' },

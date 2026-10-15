@@ -1,7 +1,7 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { ApiError } from '../../api/client'
 import { diaMes, hora, NOME_DO_TIPO } from '../../lib/formato'
-import { mensagemDeErro } from '../../lib/useCarregar'
+import { mensagemDeErro } from '../../lib/erros'
 import styles from '../Painel.module.css'
 import entrada from './Entrada.module.css'
 import { validarIngresso, type EntradaLiberada } from './entradaApi'

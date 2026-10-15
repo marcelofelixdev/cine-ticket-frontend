@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ApiError } from '../api/client'
+import { mensagemDeErro } from './erros'
 
 export interface Carregamento<T> {
   dados: T | null
@@ -45,8 +45,4 @@ export function useCarregar<T>(buscar: ((signal: AbortSignal) => Promise<T>) | n
 
   const recarregar = useCallback(() => setVersao((v) => v + 1), [])
   return { dados, erro, carregando, recarregar }
-}
-
-export function mensagemDeErro(e: unknown): string {
-  return e instanceof ApiError ? e.message : 'Não foi possível falar com o servidor. Tente de novo.'
 }

@@ -1,28 +1,32 @@
 import type { ComponentType } from 'react'
 import { Navigate, useParams } from 'react-router'
 import { useAuth } from '../auth/AuthContext'
-import { menuDoPainel, papelDoPainel } from '../auth/papeis'
+import { menuDoPainel, papelDoPainel, type PapelPainel } from '../auth/papeis'
 import { CaixaPage } from './caixa/CaixaPage'
 import { DevolucoesPage } from './caixa/DevolucoesPage'
 import { EntradaPage } from './entrada/EntradaPage'
 import styles from './Painel.module.css'
 
-/** Seções já prontas; as demais mostram "Em construção" até os itens 8.3 e 8.4. */
-const PAGINAS: Partial<Record<string, ComponentType>> = {
-  caixa: CaixaPage,
-  devolucoes: DevolucoesPage,
-  entrada: EntradaPage,
+/**
+ * Página de cada seção, por papel: a mesma seção (ex.: "pedidos") é uma tela para o
+ * gerente e outra para o admin. Seções sem página mostram "Em construção".
+ */
+const PAGINAS: Record<PapelPainel, Partial<Record<string, ComponentType>>> = {
+  STAFF: { caixa: CaixaPage, devolucoes: DevolucoesPage, entrada: EntradaPage },
+  MANAGER: { caixa: CaixaPage, devolucoes: DevolucoesPage },
+  ADMIN: {},
 }
 
 /** Seção do painel, só se ela estiver no menu do papel do usuário. */
 export function SecaoPage() {
   const { secao } = useParams()
-  const item = useItensDoMenu().find((i) => i.secao === secao)
+  const papel = usePapel()
+  const item = papel ? menuDoPainel(papel).find((i) => i.secao === secao) : undefined
 
-  if (!item) {
+  if (!papel || !item) {
     return <Navigate to="/painel" replace />
   }
-  const Pagina = PAGINAS[item.secao]
+  const Pagina = PAGINAS[papel][item.secao]
   if (Pagina) {
     return <Pagina />
   }
@@ -40,12 +44,12 @@ export function SecaoPage() {
 
 /** Abre a primeira seção do menu do usuário. */
 export function PainelInicio() {
-  const primeira = useItensDoMenu()[0]
+  const papel = usePapel()
+  const primeira = papel ? menuDoPainel(papel)[0] : undefined
   return primeira ? <Navigate to={`/painel/${primeira.secao}`} replace /> : null
 }
 
-function useItensDoMenu() {
+function usePapel(): PapelPainel | null {
   const { sessao } = useAuth()
-  const papel = sessao.status === 'logado' ? papelDoPainel(sessao.usuario.roles) : null
-  return papel ? menuDoPainel(papel) : []
+  return sessao.status === 'logado' ? papelDoPainel(sessao.usuario.roles) : null
 }

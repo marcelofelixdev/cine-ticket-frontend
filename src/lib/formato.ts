@@ -16,6 +16,11 @@ export function diaMes(dataHora: string): string {
   return `${dataHora.slice(8, 10)}/${dataHora.slice(5, 7)}`
 }
 
+/** "2026-10-15" → "15/10/2026". */
+export function dataCompleta(data: string): string {
+  return data.slice(0, 10).split('-').reverse().join('/')
+}
+
 /** Data de hoje no fuso do navegador, no formato da API (AAAA-MM-DD). */
 export function hoje(): string {
   return new Date().toLocaleDateString('sv-SE')

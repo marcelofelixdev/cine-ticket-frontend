@@ -1,25 +1,7 @@
 import { apiBlob, apiFetch } from '../../api/client'
 import type { Assento } from '../../lib/assentos'
-import type { Audio, FormaPagamento, Formato, TipoIngresso } from '../../lib/tipos'
-
-/** Sessão do dia no cinema do usuário (GET /box-office/sessions). */
-export interface SessaoDoDia {
-  id: number
-  horarioInicio: string
-  horarioFim: string
-  movieTitulo: string
-  classificacao: string | null
-  roomNome: string
-  formato: Formato
-  audio: Audio
-  valorBase: number
-  valorMeia: number
-  lugares: number
-  ocupados: number
-  meias: number
-  /** O caixa ainda vende (a API decide: até 30 min depois do início). */
-  vendasAbertas: boolean
-}
+import type { FormaPagamento, TipoIngresso } from '../../lib/tipos'
+import type { SessaoDoDia } from '../comum/sessaoDoDia'
 
 export interface MapaDeAssentos {
   sessionId: number

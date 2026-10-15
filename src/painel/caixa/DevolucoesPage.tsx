@@ -1,29 +1,25 @@
 import { useState } from 'react'
 import { diaMes, hora, moeda, NOME_DA_FORMA } from '../../lib/formato'
-import { mensagemDeErro, useCarregar } from '../../lib/useCarregar'
+import { mensagemDeErro } from '../../lib/erros'
+import { useCarregar } from '../../lib/useCarregar'
+import { ConfirmarEmDoisPassos } from '../comum/ConfirmarEmDoisPassos'
 import styles from '../Painel.module.css'
 import { confirmarDevolucao, devolucoesPendentes, type Devolucao } from './caixaApi'
 
 /** Vendas de balcão de sessões canceladas: o cliente volta ao caixa e recebe o valor. */
 export function DevolucoesPage() {
   const pendentes = useCarregar((signal) => devolucoesPendentes(signal), 'pendentes')
-  const [confirmando, setConfirmando] = useState<number | null>(null)
-  const [enviando, setEnviando] = useState(false)
   const [mensagem, setMensagem] = useState<string | null>(null)
   const [erro, setErro] = useState<string | null>(null)
 
   async function confirmar(devolucao: Devolucao) {
-    setEnviando(true)
     setErro(null)
     try {
       await confirmarDevolucao(devolucao.ticketId)
       setMensagem(`Devolução de ${moeda(devolucao.valor)} do lugar ${devolucao.assento} registrada.`)
-      setConfirmando(null)
       pendentes.recarregar()
     } catch (e) {
       setErro(mensagemDeErro(e))
-    } finally {
-      setEnviando(false)
     }
   }
 
@@ -77,25 +73,11 @@ export function DevolucoesPage() {
                     <td>{moeda(d.valor)}</td>
                     <td>{d.clienteEmail ?? '(sem e-mail)'}</td>
                     <td>
-                      {confirmando === d.ticketId ? (
-                        <span style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                          <button
-                            type="button"
-                            className={styles.botaoPrincipal}
-                            disabled={enviando}
-                            onClick={() => void confirmar(d)}
-                          >
-                            Devolvi {moeda(d.valor)}
-                          </button>
-                          <button type="button" className={styles.botao} onClick={() => setConfirmando(null)}>
-                            Voltar
-                          </button>
-                        </span>
-                      ) : (
-                        <button type="button" className={styles.botao} onClick={() => setConfirmando(d.ticketId)}>
-                          Confirmar devolução
-                        </button>
-                      )}
+                      <ConfirmarEmDoisPassos
+                        rotulo="Confirmar devolução"
+                        confirmar={`Devolvi ${moeda(d.valor)}`}
+                        onConfirmar={() => confirmar(d)}
+                      />
                     </td>
                   </tr>
                 ))}

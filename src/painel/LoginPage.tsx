@@ -4,6 +4,7 @@ import { ApiError } from '../api/client'
 import { useAuth } from '../auth/AuthContext'
 import { papelDoPainel } from '../auth/papeis'
 import { Logo } from '../components/Logo'
+import { errosPorCampo } from '../lib/erros'
 import styles from './Painel.module.css'
 
 interface DestinoAnterior {
@@ -39,7 +40,7 @@ export function LoginPage() {
         setErro('E-mail ou senha incorretos.')
       } else if (e instanceof ApiError) {
         setErro(e.message)
-        setErrosDosCampos(Object.fromEntries(e.fieldErrors.map((f) => [f.field, f.message])))
+        setErrosDosCampos(errosPorCampo(e))
       } else {
         setErro('Não foi possível falar com o servidor. Tente de novo.')
       }

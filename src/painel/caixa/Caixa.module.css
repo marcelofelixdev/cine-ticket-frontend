@@ -20,21 +20,6 @@
   min-width: 260px;
 }
 
-.navegacaoDia {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-}
-
-.navegacaoDia input {
-  font: inherit;
-  min-height: 32px;
-  padding: 3px 6px;
-  border: 1px solid var(--painel-borda);
-}
-
 .linhaSelecionada td {
   background: var(--mostarda) !important;
   font-weight: 700;
