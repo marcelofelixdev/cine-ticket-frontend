@@ -76,10 +76,27 @@ export interface RequestOptions {
   method?: string
   /** Corpo enviado como JSON. */
   json?: unknown
+  /** Tipo de resposta aceito (padrão: JSON). */
+  accept?: string
   signal?: AbortSignal
 }
 
 export async function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const response = await request(path, options)
+  if (response.status === 204) {
+    return undefined as T
+  }
+  return (await response.json()) as T
+}
+
+/** Para respostas binárias, como o PDF do ingresso. */
+export async function apiBlob(path: string, options: RequestOptions = {}): Promise<Blob> {
+  const response = await request(path, options)
+  return response.blob()
+}
+
+/** Faz a chamada, renova o token uma vez se vier 401 e transforma erro em ApiError. */
+async function request(path: string, options: RequestOptions): Promise<Response> {
   let response = await send(path, options)
   if (response.status === 401 && !path.startsWith('/auth/')) {
     if (await refreshAccessToken()) {
@@ -91,14 +108,11 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
   if (!response.ok) {
     throw await toApiError(response)
   }
-  if (response.status === 204) {
-    return undefined as T
-  }
-  return (await response.json()) as T
+  return response
 }
 
-function send(path: string, { method = 'GET', json, signal }: RequestOptions): Promise<Response> {
-  const headers = new Headers({ Accept: 'application/json' })
+function send(path: string, { method = 'GET', json, accept = 'application/json', signal }: RequestOptions): Promise<Response> {
+  const headers = new Headers({ Accept: accept })
   if (json !== undefined) {
     headers.set('Content-Type', 'application/json')
   }

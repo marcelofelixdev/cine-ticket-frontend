@@ -1,15 +1,28 @@
+import type { ComponentType } from 'react'
 import { Navigate, useParams } from 'react-router'
 import { useAuth } from '../auth/AuthContext'
 import { menuDoPainel, papelDoPainel } from '../auth/papeis'
+import { CaixaPage } from './caixa/CaixaPage'
+import { DevolucoesPage } from './caixa/DevolucoesPage'
 import styles from './Painel.module.css'
 
-/** Seção do painel. Por enquanto só a moldura: o conteúdo de cada uma vem nos itens 8.2 a 8.4. */
+/** Seções já prontas; as demais mostram "Em construção" até os itens 8.3 e 8.4. */
+const PAGINAS: Partial<Record<string, ComponentType>> = {
+  caixa: CaixaPage,
+  devolucoes: DevolucoesPage,
+}
+
+/** Seção do painel, só se ela estiver no menu do papel do usuário. */
 export function SecaoPage() {
   const { secao } = useParams()
   const item = useItensDoMenu().find((i) => i.secao === secao)
 
   if (!item) {
     return <Navigate to="/painel" replace />
+  }
+  const Pagina = PAGINAS[item.secao]
+  if (Pagina) {
+    return <Pagina />
   }
   return (
     <section className={styles.janela} aria-labelledby="secao">

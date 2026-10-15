@@ -16,7 +16,8 @@ export function fakeApi(rotas: Record<string, Rota>) {
     const url = typeof input === 'string' ? input : input.toString()
     const method = init?.method ?? 'GET'
     const chave = `${method} ${url.replace('/api/v1', '')}`
-    const rota = rotas[chave]
+    // Chave com a query string tem prioridade; sem ela, vale para qualquer query.
+    const rota = rotas[chave] ?? rotas[chave.split('?')[0]]
     if (!rota) {
       return json({ title: 'Não encontrado', detail: `Rota falsa ausente: ${chave}` }, 404)
     }
@@ -26,6 +27,16 @@ export function fakeApi(rotas: Record<string, Rota>) {
   })
   vi.stubGlobal('fetch', mock)
   return mock
+}
+
+/** Corpo (JSON) da última chamada a esta rota. */
+export function ultimoCorpo(mock: ReturnType<typeof fakeApi>, chave: string): unknown {
+  const call = mock.mock.calls.filter(([input, init]) => {
+    const url = typeof input === 'string' ? input : input.toString()
+    return `${init?.method ?? 'GET'} ${url.replace('/api/v1', '')}` === chave
+  }).at(-1)
+  const body = call?.[1]?.body
+  return typeof body === 'string' ? JSON.parse(body) : undefined
 }
 
 export function chamadas(mock: ReturnType<typeof fakeApi>, chave: string): number {

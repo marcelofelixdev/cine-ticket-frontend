@@ -45,6 +45,7 @@ describe('painel', () => {
       'POST /auth/login': token,
       'GET /users/me': () => json(usuario(['ROLE_STAFF'])),
       'GET /cinemas/1': () => json({ id: 1, nome: 'Cine Paulista' }),
+      'GET /box-office/sessions': () => json([]),
     })
     abrir('/painel')
 
@@ -52,7 +53,7 @@ describe('painel', () => {
     await userEvent.type(screen.getByLabelText('Senha'), 'segredo123')
     await userEvent.click(screen.getByRole('button', { name: 'Entrar' }))
 
-    expect(await screen.findByRole('heading', { name: 'Caixa' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /^Sessões · / })).toBeInTheDocument()
     const abas = screen.getAllByRole('link').map((a) => a.textContent)
     expect(abas).toEqual(['Caixa', 'Devoluções', 'Entrada (validar QR)'])
     expect(await screen.findByText('Painel · Cine Paulista')).toBeInTheDocument()
