@@ -1,10 +1,11 @@
 import { useState, type FormEvent } from 'react'
 import { ApiError } from '../../api/client'
 import { errosPorCampo, mensagemDeErro } from '../../lib/erros'
-import { dataCompleta, duracao, hoje, hora, moeda, NOME_DA_FORMA, nomeDoAudio, versao } from '../../lib/formato'
-import { AUDIOS, FORMATOS, type Audio, type FormaPagamento, type Formato } from '../../lib/tipos'
+import { dataCompleta, duracao, hoje, hora, moeda, nomeDoAudio, versao } from '../../lib/formato'
+import { AUDIOS, FORMATOS, type Audio, type Formato } from '../../lib/tipos'
 import { useCarregar } from '../../lib/useCarregar'
 import { ConfirmarEmDoisPassos } from '../comum/ConfirmarEmDoisPassos'
+import { JanelaDeResumo } from '../comum/JanelaDeResumo'
 import { NavegacaoDeDia } from '../comum/NavegacaoDeDia'
 import type { SessaoDoDia } from '../comum/sessaoDoDia'
 import styles from '../Painel.module.css'
@@ -78,7 +79,7 @@ export function SessoesPage() {
             </p>
           </div>
         </section>
-        {resumoId !== null && <ResumoDaSessaoView id={resumoId} />}
+        {resumoId !== null && <JanelaDeResumo id={resumoId} buscar={resumoDaSessao} />}
       </div>
       <div className={styles.colunaEstreita}>
         <FormularioDeSessao
@@ -165,55 +166,6 @@ function TabelaDeSessoes({ sessoes, onResumo, onCancelar }: TabelaProps) {
         </table>
       </div>
     </>
-  )
-}
-
-function ResumoDaSessaoView({ id }: { id: number }) {
-  const resumo = useCarregar((signal) => resumoDaSessao(id, signal), String(id))
-  const r = resumo.dados
-  return (
-    <section className={styles.janela} aria-labelledby="resumo">
-      <h2 id="resumo" className={styles.janelaTitulo}>
-        {r ? `Resumo · ${r.filmeTitulo} · ${hora(r.horarioSessao)} · ${r.salaNome}` : 'Resumo da sessão'}
-      </h2>
-      <div className={styles.janelaCorpo}>
-        {resumo.erro && <p className={styles.alerta}>{resumo.erro}</p>}
-        {r && (
-          <table className={styles.tabela}>
-            <tbody>
-              <tr>
-                <th scope="row">Lugares</th>
-                <td>
-                  {r.lugares} · {r.vendidos} vendidos · {r.reservados} reservados · {r.livres} livres
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Meias</th>
-                <td>{r.meias}</td>
-              </tr>
-              <tr>
-                <th scope="row">Entradas na sala</th>
-                <td>{r.entradas}</td>
-              </tr>
-              <tr>
-                <th scope="row">Receita</th>
-                <td>
-                  {moeda(r.receitaTotal)} (online {moeda(r.receitaOnline)}, balcão {moeda(r.receitaBalcao)})
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Balcão por forma</th>
-                <td>
-                  {Object.entries(r.receitaBalcaoPorForma)
-                    .map(([forma, valor]) => `${NOME_DA_FORMA[forma as FormaPagamento]} ${moeda(valor ?? 0)}`)
-                    .join(' · ') || '—'}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        )}
-      </div>
-    </section>
   )
 }
 

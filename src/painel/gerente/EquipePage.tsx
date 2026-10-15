@@ -1,40 +1,27 @@
 import { useState, type FormEvent } from 'react'
-import { errosPorCampo, mensagemDeErro } from '../../lib/erros'
 import { useCarregar } from '../../lib/useCarregar'
+import { Avisos } from '../comum/Avisos'
+import { CamposDeAcesso, TabelaDeEquipe } from '../comum/Equipe'
+import { ACESSO_VAZIO } from '../comum/painelApi'
+import { useAcao } from '../comum/useAcao'
 import styles from '../Painel.module.css'
 import { cadastrarFuncionario, equipe } from './gerenteApi'
-
-const PAPEL = { MANAGER: 'Gerente', STAFF: 'Funcionário' } as const
 
 /** Funcionários do cinema do gerente; o gerente só cadastra funcionários do próprio cinema. */
 export function EquipePage() {
   const membros = useCarregar((signal) => equipe(signal), 'equipe')
-  const [nome, setNome] = useState('')
-  const [email, setEmail] = useState('')
-  const [senha, setSenha] = useState('')
-  const [enviando, setEnviando] = useState(false)
-  const [mensagem, setMensagem] = useState<string | null>(null)
-  const [erro, setErro] = useState<string | null>(null)
-  const [erros, setErros] = useState<Record<string, string>>({})
+  const [dados, setDados] = useState(ACESSO_VAZIO)
+  const acao = useAcao()
 
   async function cadastrar(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setEnviando(true)
-    setErro(null)
-    setErros({})
-    setMensagem(null)
-    try {
-      const novo = await cadastrarFuncionario({ nome: nome.trim(), email: email.trim(), senha })
-      setMensagem(`${novo.nome} cadastrado. Passe o e-mail e a senha para ele entrar no painel.`)
-      setNome('')
-      setEmail('')
-      setSenha('')
+    const ok = await acao.executar(async () => {
+      const novo = await cadastrarFuncionario({ ...dados, nome: dados.nome.trim(), email: dados.email.trim() })
+      return `${novo.nome} cadastrado. Passe o e-mail e a senha para ele entrar no painel.`
+    })
+    if (ok) {
+      setDados(ACESSO_VAZIO)
       membros.recarregar()
-    } catch (e) {
-      setErro(mensagemDeErro(e))
-      setErros(errosPorCampo(e))
-    } finally {
-      setEnviando(false)
     }
   }
 
@@ -46,26 +33,7 @@ export function EquipePage() {
         </h1>
         <div className={styles.janelaCorpo}>
           {membros.erro && <p className={styles.alerta}>{membros.erro}</p>}
-          {membros.dados && (
-            <table className={styles.tabela}>
-              <thead>
-                <tr>
-                  <th scope="col">Nome</th>
-                  <th scope="col">E-mail</th>
-                  <th scope="col">Papel</th>
-                </tr>
-              </thead>
-              <tbody>
-                {membros.dados.map((m) => (
-                  <tr key={m.id}>
-                    <td>{m.nome}</td>
-                    <td>{m.email}</td>
-                    <td>{PAPEL[m.papel]}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+          {membros.dados && <TabelaDeEquipe membros={membros.dados} />}
         </div>
       </section>
       <section className={`${styles.janela} ${styles.colunaEstreita}`} aria-labelledby="novo-funcionario">
@@ -73,33 +41,10 @@ export function EquipePage() {
           Novo funcionário
         </h2>
         <form className={`${styles.janelaCorpo} ${styles.formulario}`} onSubmit={cadastrar} noValidate>
-          {mensagem && (
-            <p className={styles.sucesso} role="status">
-              {mensagem}
-            </p>
-          )}
-          {erro && (
-            <p className={styles.alerta} role="alert">
-              {erro}
-            </p>
-          )}
-          <label className={styles.campo}>
-            Nome
-            <input value={nome} onChange={(e) => setNome(e.target.value)} />
-            {erros.nome && <span className={styles.erroDoCampo}>{erros.nome}</span>}
-          </label>
-          <label className={styles.campo}>
-            E-mail
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            {erros.email && <span className={styles.erroDoCampo}>{erros.email}</span>}
-          </label>
-          <label className={styles.campo}>
-            Senha inicial
-            <input type="password" autoComplete="new-password" value={senha} onChange={(e) => setSenha(e.target.value)} />
-            {erros.senha && <span className={styles.erroDoCampo}>{erros.senha}</span>}
-          </label>
-          <button type="submit" className={styles.botaoPrincipal} disabled={enviando}>
-            {enviando ? 'Cadastrando…' : 'Cadastrar funcionário'}
+          <Avisos sucesso={acao.sucesso} erro={acao.erro} />
+          <CamposDeAcesso dados={dados} onMudar={setDados} erros={acao.erros} />
+          <button type="submit" className={styles.botaoPrincipal} disabled={acao.enviando}>
+            {acao.enviando ? 'Cadastrando…' : 'Cadastrar funcionário'}
           </button>
         </form>
       </section>
