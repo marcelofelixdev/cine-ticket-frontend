@@ -80,6 +80,10 @@ export function filmesEmCartaz(cinemaId: number, filtro: FiltroDaVitrine, signal
   return apiFetch(`/movies?${query({ cinemaId, ...filtro, size: 50 })}`, { signal })
 }
 
+export function sessao(id: number, signal?: AbortSignal): Promise<SessaoPublica> {
+  return apiFetch(`/sessions/${id}`, { signal })
+}
+
 export function filme(id: number, signal?: AbortSignal): Promise<Filme> {
   return apiFetch(`/movies/${id}`, { signal })
 }

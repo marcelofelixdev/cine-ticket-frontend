@@ -61,6 +61,7 @@ afterEach(() => {
   setAccessToken(null)
   vi.unstubAllGlobals()
   localStorage.clear()
+  sessionStorage.clear()
 })
 
 describe('vitrine', () => {
@@ -165,5 +166,60 @@ describe('ficha do filme', () => {
       'src',
       'https://www.youtube-nocookie.com/embed/Way9Dexny3w?autoplay=1',
     )
+  })
+})
+
+describe('escolha de lugares', () => {
+  it('marca lugares, escolhe o tipo com o preço da API e guarda a escolha para depois do login', async () => {
+    fakeApi({
+      'POST /auth/refresh': () => json({ title: 'Não autenticado' }, 401),
+      'GET /cinemas/cidades': () => json([{ cidade: 'São Paulo', uf: 'SP' }]),
+      'GET /cinemas': () => pagina([]),
+      'GET /sessions/10': () => json(sessao(10, 3, 'Duna: Parte Dois', '21:40')),
+      'GET /sessions/10/seats': () =>
+        json({
+          sessionId: 10,
+          salaNome: 'Sala 1',
+          totalAssentos: 4,
+          assentosLivres: 3,
+          cadeirasPorFila: 2,
+          corredores: [1],
+          meiasRestantes: 1,
+          assentos: [
+            { id: 1, fila: 'A', numero: 1, status: 'OCUPADO' },
+            { id: 2, fila: 'A', numero: 2, status: 'LIVRE' },
+            { id: 3, fila: 'B', numero: 1, status: 'LIVRE' },
+            { id: 4, fila: 'B', numero: 2, status: 'LIVRE' },
+          ],
+        }),
+    })
+    render(
+      <MemoryRouter initialEntries={['/sessoes/10']}>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByRole('button', { name: 'A-1, ocupado' })).toBeDisabled()
+    expect(screen.getByText('3 de 4 lugares livres')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Continuar para o pagamento' })).toBeDisabled()
+
+    await userEvent.click(screen.getByRole('button', { name: 'A-2, livre' }))
+    await userEvent.click(screen.getByRole('button', { name: 'B-1, livre' }))
+    const lugarA2 = screen.getByRole('group', { name: 'A-2' })
+    await userEvent.selectOptions(within(lugarA2).getByLabelText('Tipo de ingresso'), 'MEIA_ESTUDANTE')
+    await userEvent.type(within(lugarA2).getByLabelText('Nº da carteira de estudante'), '123456789')
+    expect(screen.getByText('R$ 63,00', { exact: false })).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Continuar para o pagamento' }))
+    expect(await screen.findByRole('heading', { name: 'Entrar' })).toBeInTheDocument()
+    expect(JSON.parse(sessionStorage.getItem('cineticket.escolha') ?? '{}')).toEqual({
+      sessionId: 10,
+      lugares: [
+        { seatId: 2, rotulo: 'A-2', tipo: 'MEIA_ESTUDANTE', documentoMeia: '123456789' },
+        { seatId: 3, rotulo: 'B-1', tipo: 'INTEIRA' },
+      ],
+    })
   })
 })

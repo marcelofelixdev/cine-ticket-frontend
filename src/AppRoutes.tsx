@@ -2,6 +2,7 @@ import { Link, Route, Routes } from 'react-router'
 import { LoginPage } from './painel/LoginPage'
 import { PainelLayout } from './painel/PainelLayout'
 import { PainelInicio, SecaoPage } from './painel/SecaoPage'
+import { AssentosPage } from './site/compra/AssentosPage'
 import { EmConstrucao } from './site/EmConstrucao'
 import { FilmePage } from './site/filme/FilmePage'
 import { HomePage } from './site/home/HomePage'
@@ -13,7 +14,8 @@ export function AppRoutes() {
       <Route path="/" element={<SiteLayout />}>
         <Route index element={<HomePage />} />
         <Route path="filmes/:id" element={<FilmePage />} />
-        <Route path="sessoes/:id" element={<EmConstrucao titulo="Escolha dos lugares" />} />
+        <Route path="sessoes/:id" element={<AssentosPage />} />
+        <Route path="sessoes/:id/pagamento" element={<EmConstrucao titulo="Pagamento" />} />
         <Route path="entrar" element={<EmConstrucao titulo="Entrar" />} />
         <Route path="meus-ingressos" element={<EmConstrucao titulo="Meus ingressos" />} />
       </Route>
