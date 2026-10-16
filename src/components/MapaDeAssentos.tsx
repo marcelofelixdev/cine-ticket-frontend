@@ -1,5 +1,10 @@
-import { montarFileiras, rotulo, type Assento } from '../../lib/assentos'
-import caixa from './Caixa.module.css'
+import { montarFileiras, rotulo, type Assento } from '../lib/assentos'
+
+/**
+ * CSS module de quem usa o mapa (caixa ou site), com as classes tela, mapa, fileira,
+ * letra, assento, corredor e legenda.
+ */
+export type EstilosDoMapa = Readonly<Record<string, string>>
 
 interface Props {
   assentos: Assento[]
@@ -7,16 +12,18 @@ interface Props {
   selecionados: Set<number>
   bloqueado: boolean
   onAlternar: (assento: Assento) => void
+  estilos: EstilosDoMapa
 }
 
-export function MapaDeAssentos({ assentos, corredores, selecionados, bloqueado, onAlternar }: Props) {
+/** Mapa da sala com os corredores que a API informa; lugares ocupados não são clicáveis. */
+export function MapaDeAssentos({ assentos, corredores, selecionados, bloqueado, onAlternar, estilos }: Props) {
   return (
     <div>
-      <div className={caixa.tela}>TELA</div>
-      <div className={caixa.mapa} role="group" aria-label="Mapa de assentos">
+      <div className={estilos.tela}>TELA</div>
+      <div className={estilos.mapa} role="group" aria-label="Mapa de assentos">
         {montarFileiras(assentos, corredores).map((fileira) => (
-          <div key={fileira.fila} className={caixa.fileira}>
-            <span className={caixa.letra} aria-hidden="true">
+          <div key={fileira.fila} className={estilos.fileira}>
+            <span className={estilos.letra} aria-hidden="true">
               {fileira.fila}
             </span>
             {fileira.assentos.map((assento) => {
@@ -27,7 +34,7 @@ export function MapaDeAssentos({ assentos, corredores, selecionados, bloqueado, 
                 <button
                   key={assento.id}
                   type="button"
-                  className={assento.corredorAntes ? `${caixa.assento} ${caixa.corredor}` : caixa.assento}
+                  className={assento.corredorAntes ? `${estilos.assento} ${estilos.corredor}` : estilos.assento}
                   aria-pressed={marcado}
                   aria-label={`${rotulo(assento)}, ${situacao}`}
                   disabled={ocupado || bloqueado}
@@ -40,7 +47,7 @@ export function MapaDeAssentos({ assentos, corredores, selecionados, bloqueado, 
           </div>
         ))}
       </div>
-      <div className={caixa.legenda} aria-hidden="true">
+      <div className={estilos.legenda} aria-hidden="true">
         <span>□ Livre</span>
         <span>■ Selecionado</span>
         <span>▨ Ocupado</span>
