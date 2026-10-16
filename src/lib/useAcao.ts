@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { errosPorCampo, mensagemDeErro } from '../../lib/erros'
+import { errosPorCampo, mensagemDeErro } from './erros'
 
 export interface Acao {
   enviando: boolean

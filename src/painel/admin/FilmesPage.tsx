@@ -7,7 +7,7 @@ import { CampoDeTexto } from '../comum/CampoDeTexto'
 import { ConfirmarEmDoisPassos } from '../comum/ConfirmarEmDoisPassos'
 import { Paginacao } from '../comum/Paginacao'
 import { NOME_DA_SITUACAO_NA_PROGRAMACAO } from '../comum/painelApi'
-import { useAcao, type Acao } from '../comum/useAcao'
+import { useAcao, type Acao } from '../../lib/useAcao'
 import styles from '../Painel.module.css'
 import {
   cadastrarDoTmdb,
