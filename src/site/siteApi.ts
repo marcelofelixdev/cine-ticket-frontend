@@ -47,6 +47,8 @@ export interface SessaoPublica {
   formato: Formato
   audio: Audio
   lugaresLivres: number | null
+  /** Meias que a API ainda aceita nesta sessão (cota). */
+  meiasRestantes: number | null
 }
 
 /** Filtros da vitrine: a API aplica em filmes e em sessões. */
@@ -76,6 +78,25 @@ export function cinemasDaCidade(cidade: string, signal?: AbortSignal): Promise<P
 
 export function filmesEmCartaz(cinemaId: number, filtro: FiltroDaVitrine, signal?: AbortSignal): Promise<Pagina<Filme>> {
   return apiFetch(`/movies?${query({ cinemaId, ...filtro, size: 50 })}`, { signal })
+}
+
+export function filme(id: number, signal?: AbortSignal): Promise<Filme> {
+  return apiFetch(`/movies/${id}`, { signal })
+}
+
+/** Sessões de um filme num dia, em cada cinema informado (a API filtra por cinema). */
+export async function sessoesDoFilmeNosCinemas(
+  movieId: number,
+  cinemaIds: number[],
+  data: string,
+  signal?: AbortSignal,
+): Promise<Map<number, SessaoPublica[]>> {
+  const listas = await Promise.all(
+    cinemaIds.map((cinemaId) =>
+      apiFetch<Pagina<SessaoPublica>>(`/sessions?${query({ movieId, cinemaId, date: data, size: 100 })}`, { signal }),
+    ),
+  )
+  return new Map(cinemaIds.map((cinemaId, i) => [cinemaId, listas[i].content]))
 }
 
 export function emBreve(cidade: string, signal?: AbortSignal): Promise<Pagina<Filme>> {

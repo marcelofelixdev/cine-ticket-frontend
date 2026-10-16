@@ -256,35 +256,10 @@
   margin-bottom: 24px;
 }
 
-.dias,
 .filtros {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-}
-
-.pilula {
-  min-height: 44px;
-  padding: 8px 16px;
-  font: inherit;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--verde);
-  cursor: pointer;
-  background: var(--branco);
-  border: 2px solid var(--verde);
-  border-radius: 999px;
-}
-
-.pilulaDia {
-  color: var(--grafite);
-  background: var(--mostarda);
-  border-color: var(--mostarda);
-}
-
-.pilulaAtiva {
-  color: var(--papel);
-  background: var(--verde);
 }
 
 /* ---------- Quadro do dia ---------- */

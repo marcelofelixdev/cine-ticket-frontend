@@ -3,6 +3,7 @@ import { LoginPage } from './painel/LoginPage'
 import { PainelLayout } from './painel/PainelLayout'
 import { PainelInicio, SecaoPage } from './painel/SecaoPage'
 import { EmConstrucao } from './site/EmConstrucao'
+import { FilmePage } from './site/filme/FilmePage'
 import { HomePage } from './site/home/HomePage'
 import { SiteLayout } from './site/SiteLayout'
 
@@ -11,7 +12,7 @@ export function AppRoutes() {
     <Routes>
       <Route path="/" element={<SiteLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="filmes/:id" element={<EmConstrucao titulo="Ficha do filme" />} />
+        <Route path="filmes/:id" element={<FilmePage />} />
         <Route path="sessoes/:id" element={<EmConstrucao titulo="Escolha dos lugares" />} />
         <Route path="entrar" element={<EmConstrucao titulo="Entrar" />} />
         <Route path="meus-ingressos" element={<EmConstrucao titulo="Meus ingressos" />} />

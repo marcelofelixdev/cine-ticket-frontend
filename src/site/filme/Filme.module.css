@@ -1,0 +1,362 @@
+.destaque {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 28px;
+  width: min(1136px, calc(100% - 64px));
+  min-height: 360px;
+  margin: 24px auto 0;
+  padding: 28px;
+  background-color: var(--mostarda);
+  background-position: center 25%;
+  background-size: cover;
+  border-top: 8px solid var(--mostarda);
+  border-radius: 18px;
+}
+
+.poster {
+  display: block;
+  flex: 0 0 200px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  background: var(--grafite);
+  border: 4px solid var(--papel);
+  border-radius: 12px;
+}
+
+.cartela {
+  display: flex;
+  flex: 999 1 420px;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 22px 24px;
+  background: rgb(247 247 242 / 94%);
+  border-radius: 14px;
+}
+
+.selos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.estreia {
+  padding: 3px 10px;
+  color: var(--papel);
+  background: var(--verde);
+  border-radius: 999px;
+}
+
+.titulo {
+  margin: 0;
+  font-family: var(--fonte-display);
+  font-size: clamp(38px, 6vw, 58px);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--verde);
+}
+
+.meta {
+  margin: 0;
+  font-size: 15px;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.botaoPrincipal,
+.botao {
+  min-height: 46px;
+  padding: 11px 22px;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.botaoPrincipal {
+  color: var(--grafite);
+  background: var(--mostarda);
+  border: 2px solid var(--mostarda);
+}
+
+.botao {
+  color: var(--verde);
+  background: transparent;
+  border: 2px solid var(--verde);
+}
+
+.botaoPrincipal:hover,
+.botao:hover {
+  color: var(--papel);
+  background: var(--verde);
+  border-color: var(--verde);
+}
+
+.trailer {
+  width: min(1136px, calc(100% - 64px));
+  margin: 16px auto 0;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 14px;
+}
+
+.trailer iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.corpo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 36px;
+  padding-top: 32px;
+}
+
+.principal {
+  display: flex;
+  flex: 999 1 560px;
+  flex-direction: column;
+  gap: 32px;
+  min-width: 0;
+}
+
+.subtitulo {
+  margin: 0 0 12px;
+  font-family: var(--fonte-display);
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--verde);
+}
+
+.sinopse {
+  max-width: 70ch;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.elenco {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.elenco li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.elenco strong {
+  font-size: 15px;
+}
+
+.iniciais {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 4px;
+  font-family: var(--fonte-display);
+  font-size: 26px;
+  color: var(--mostarda);
+  background: var(--verde);
+  border-radius: 50%;
+}
+
+.cabecalhoSessoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.cabecalhoSessoes .subtitulo {
+  margin: 0;
+}
+
+.cinemas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cinema {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 20px;
+  background: var(--branco);
+  border-radius: 16px;
+}
+
+.cinemaCabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.cinemaNome {
+  font-family: var(--fonte-display);
+  font-size: 24px;
+}
+
+.horarios {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 10px;
+}
+
+.sessao {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--grafite);
+  text-decoration: none;
+  border: 2px solid var(--verde);
+  border-radius: 12px;
+}
+
+a.sessao:hover {
+  color: var(--grafite);
+  background: var(--papel);
+  border-color: var(--mostarda);
+}
+
+.sessaoEsgotada {
+  color: var(--texto-suave);
+  border-style: dashed;
+  border-color: var(--linha);
+}
+
+.sessaoTopo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sessaoHora {
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--verde);
+}
+
+.versao {
+  padding: 2px 9px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--grafite);
+  background: var(--mostarda);
+  border-radius: 999px;
+}
+
+.livres,
+.poucos {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.livres {
+  color: var(--verde);
+}
+
+.poucos {
+  color: var(--erro);
+}
+
+.ficha {
+  display: flex;
+  flex: 1 1 300px;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 280px;
+  padding: 24px;
+  background: var(--branco);
+  border-radius: 18px;
+}
+
+.ficha .subtitulo {
+  margin: 0;
+  font-size: 28px;
+}
+
+.ficha dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 18px;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.ficha dt {
+  font-weight: 800;
+  color: var(--verde);
+}
+
+.ficha dd {
+  margin: 0;
+}
+
+.meia {
+  margin: 0;
+  padding-top: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  border-top: 1px dashed var(--linha);
+}
+
+.fonte {
+  margin: 0;
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .destaque {
+    width: calc(100% - 32px);
+    margin-top: 16px;
+    padding: 16px;
+  }
+
+  .poster {
+    flex-basis: 120px;
+  }
+
+  .cartela {
+    padding: 16px;
+  }
+
+  .trailer {
+    width: calc(100% - 32px);
+  }
+
+  .ficha {
+    min-width: 0;
+  }
+}

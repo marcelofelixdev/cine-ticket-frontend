@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { dataCompleta, diaDaSemana, duracao, hoje, somarDias } from '../../lib/formato'
+import { dataCompleta, diaDaSemana, duracao, hoje } from '../../lib/formato'
 import { useCarregar } from '../../lib/useCarregar'
 import { Classificacao } from '../Classificacao'
 import { HorarioDaSessao } from '../HorarioDaSessao'
 import { useLocal } from '../local'
+import { SeletorDeDia } from '../SeletorDeDia'
 import { RoloDeDestaques } from './RoloDeDestaques'
 import { emBreve, filmesEmCartaz, sessoesDoDia, type Filme, type FiltroDaVitrine, type SessaoPublica } from '../siteApi'
 import siteStyles from '../Site.module.css'
@@ -12,7 +13,6 @@ import styles from './Home.module.css'
 
 /** Quantos filmes entram no rolo de destaques. */
 const DESTAQUES = 5
-const DIAS = 7
 
 interface Opcao {
   rotulo: string
@@ -72,7 +72,6 @@ export function HomePage() {
   // Quadro do dia: filmes na ordem da primeira sessão.
   const quadro = [...sessoesPorFilme.entries()]
   const ehHoje = dia === hoje()
-  const dias = Array.from({ length: DIAS }, (_, i) => somarDias(hoje(), i))
 
   return (
     <main className={siteStyles.pagina}>
@@ -92,23 +91,11 @@ export function HomePage() {
       </section>
 
       <div className={styles.controles}>
-        <div className={styles.dias} role="group" aria-label="Escolha o dia">
-          {dias.map((d, i) => (
-            <button
-              key={d}
-              type="button"
-              className={d === dia ? `${styles.pilula} ${styles.pilulaDia}` : styles.pilula}
-              aria-pressed={d === dia}
-              onClick={() => setDia(d)}
-            >
-              {i === 0 ? 'Hoje' : diaDaSemana(d)}
-            </button>
-          ))}
-        </div>
+        <SeletorDeDia dia={dia} onEscolher={setDia} />
         <div className={styles.filtros} role="group" aria-label="Filtros">
           <button
             type="button"
-            className={Object.keys(filtro).length === 0 ? `${styles.pilula} ${styles.pilulaAtiva}` : styles.pilula}
+            className={Object.keys(filtro).length === 0 ? `${siteStyles.pilula} ${siteStyles.pilulaAtiva}` : siteStyles.pilula}
             aria-pressed={Object.keys(filtro).length === 0}
             onClick={() => setFiltro({})}
           >
@@ -118,7 +105,7 @@ export function HomePage() {
             <button
               key={opcao.rotulo}
               type="button"
-              className={ativa(filtro, opcao) ? `${styles.pilula} ${styles.pilulaAtiva}` : styles.pilula}
+              className={ativa(filtro, opcao) ? `${siteStyles.pilula} ${siteStyles.pilulaAtiva}` : siteStyles.pilula}
               aria-pressed={ativa(filtro, opcao)}
               onClick={() => setFiltro(alternar(filtro, opcao))}
             >

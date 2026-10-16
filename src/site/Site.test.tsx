@@ -41,6 +41,7 @@ const sessao = (id: number, movieId: number, titulo: string, horario: string, fo
   formato,
   audio,
   lugaresLivres: 100,
+  meiasRestantes: 40,
 })
 
 function abrir() {
@@ -113,5 +114,46 @@ describe('vitrine', () => {
 
     await userEvent.selectOptions(screen.getByLabelText('Cidade'), 'Rio de Janeiro/RJ')
     expect(urls().some((u) => u.includes('/cinemas?cidade=Rio+de+Janeiro'))).toBe(true)
+  })
+})
+
+describe('ficha do filme', () => {
+  it('mostra a ficha, o trailer e as sessões de cada cinema da cidade', async () => {
+    fakeApi({
+      'POST /auth/refresh': () => json({ title: 'Não autenticado' }, 401),
+      'GET /cinemas/cidades': () => json([{ cidade: 'São Paulo', uf: 'SP' }]),
+      'GET /cinemas': () =>
+        pagina([{ id: 1, nome: 'Cine Paulista', endereco: 'Av. Paulista, 1000', cidade: 'São Paulo', uf: 'SP' }]),
+      'GET /movies/3': () =>
+        json(
+          filme(3, 'Duna: Parte Dois', {
+            tituloOriginal: 'Dune: Part Two',
+            trailerUrl: 'https://www.youtube.com/watch?v=Way9Dexny3w',
+            dataEstreia: '2024-02-29',
+          }),
+        ),
+      'GET /sessions': () => pagina([{ ...sessao(10, 3, 'Duna: Parte Dois', '18:00', '3D', 'DUBLADO'), lugaresLivres: 8 }]),
+    })
+    render(
+      <MemoryRouter initialEntries={['/filmes/3']}>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Duna: Parte Dois' })).toBeInTheDocument()
+    expect(screen.getByText('Em cartaz desde 29/02/2024')).toBeInTheDocument()
+    expect(screen.getByText('Chani')).toBeInTheDocument()
+
+    const sessao10 = await screen.findByRole('link', { name: /18:00/ })
+    expect(sessao10).toHaveAttribute('href', '/sessoes/10')
+    expect(sessao10).toHaveTextContent('Últimos 8 lugares · 40 meias')
+
+    await userEvent.click(screen.getByRole('button', { name: 'Assistir ao trailer' }))
+    expect(screen.getByTitle('Trailer de Duna: Parte Dois')).toHaveAttribute(
+      'src',
+      'https://www.youtube-nocookie.com/embed/Way9Dexny3w?autoplay=1',
+    )
   })
 })
