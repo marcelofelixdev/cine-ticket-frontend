@@ -119,7 +119,7 @@ describe('vitrine', () => {
 
 describe('ficha do filme', () => {
   it('mostra a ficha, o trailer e as sessões de cada cinema da cidade', async () => {
-    fakeApi({
+    const api = fakeApi({
       'POST /auth/refresh': () => json({ title: 'Não autenticado' }, 401),
       'GET /cinemas/cidades': () => json([{ cidade: 'São Paulo', uf: 'SP' }]),
       'GET /cinemas': () =>
@@ -149,6 +149,9 @@ describe('ficha do filme', () => {
     const sessao10 = await screen.findByRole('link', { name: /18:00/ })
     expect(sessao10).toHaveAttribute('href', '/sessoes/10')
     expect(sessao10).toHaveTextContent('Últimos 8 lugares · 40 meias')
+    // Uma chamada só, filtrada pela cidade na API.
+    const sessoes = api.mock.calls.map(([url]) => String(url)).filter((u) => u.includes('/sessions?'))
+    expect(sessoes).toEqual([`/api/v1/sessions?movieId=3&cidade=S%C3%A3o+Paulo&date=${hoje()}&size=200`])
 
     await userEvent.click(screen.getByRole('button', { name: 'Assistir ao trailer' }))
     expect(screen.getByTitle('Trailer de Duna: Parte Dois')).toHaveAttribute(

@@ -5,7 +5,7 @@ import { useCarregar } from '../../lib/useCarregar'
 import { Classificacao } from '../Classificacao'
 import { useLocal } from '../local'
 import { SeletorDeDia } from '../SeletorDeDia'
-import { filme as buscarFilme, sessoesDoFilmeNosCinemas, type Filme, type SessaoPublica } from '../siteApi'
+import { filme as buscarFilme, sessoesDoFilmeNaCidade, type Filme, type SessaoPublica } from '../siteApi'
 import siteStyles from '../Site.module.css'
 import styles from './Filme.module.css'
 
@@ -178,12 +178,16 @@ function Trailer({ url, titulo }: { url: string; titulo: string }) {
 function Sessoes({ filme }: { filme: Filme }) {
   const { cidade, cinemasDaCidade } = useLocal()
   const [dia, setDia] = useState(hoje())
-  const ids = cinemasDaCidade.map((c) => c.id)
   const sessoes = useCarregar(
-    ids.length > 0 ? (signal) => sessoesDoFilmeNosCinemas(filme.id, ids, dia, signal) : null,
-    `${filme.id}-${dia}-${ids.join(',')}`,
+    cidade ? (signal) => sessoesDoFilmeNaCidade(filme.id, cidade.cidade, dia, signal) : null,
+    `${filme.id}-${dia}-${cidade?.cidade}`,
   )
-  const comSessao = cinemasDaCidade.filter((c) => (sessoes.dados?.get(c.id) ?? []).length > 0)
+  // A API manda as sessões da cidade em ordem de horário; aqui só separamos por cinema.
+  const porCinema = new Map<number, SessaoPublica[]>()
+  for (const s of sessoes.dados?.content ?? []) {
+    porCinema.set(s.cinemaId, [...(porCinema.get(s.cinemaId) ?? []), s])
+  }
+  const comSessao = cinemasDaCidade.filter((c) => porCinema.has(c.id))
 
   return (
     <section id="sessoes" aria-labelledby="sessoes-titulo">
@@ -205,7 +209,7 @@ function Sessoes({ filme }: { filme: Filme }) {
               <span>{c.endereco}</span>
             </div>
             <div className={styles.horarios}>
-              {(sessoes.dados?.get(c.id) ?? []).map((s) => (
+              {(porCinema.get(c.id) ?? []).map((s) => (
                 <CartaoDeSessao key={s.id} sessao={s} />
               ))}
             </div>

@@ -84,19 +84,14 @@ export function filme(id: number, signal?: AbortSignal): Promise<Filme> {
   return apiFetch(`/movies/${id}`, { signal })
 }
 
-/** Sessões de um filme num dia, em cada cinema informado (a API filtra por cinema). */
-export async function sessoesDoFilmeNosCinemas(
+/** Sessões de um filme num dia nos cinemas de uma cidade (uma chamada; a API filtra pela cidade). */
+export function sessoesDoFilmeNaCidade(
   movieId: number,
-  cinemaIds: number[],
+  cidade: string,
   data: string,
   signal?: AbortSignal,
-): Promise<Map<number, SessaoPublica[]>> {
-  const listas = await Promise.all(
-    cinemaIds.map((cinemaId) =>
-      apiFetch<Pagina<SessaoPublica>>(`/sessions?${query({ movieId, cinemaId, date: data, size: 100 })}`, { signal }),
-    ),
-  )
-  return new Map(cinemaIds.map((cinemaId, i) => [cinemaId, listas[i].content]))
+): Promise<Pagina<SessaoPublica>> {
+  return apiFetch(`/sessions?${query({ movieId, cidade, date: data, size: 200 })}`, { signal })
 }
 
 export function emBreve(cidade: string, signal?: AbortSignal): Promise<Pagina<Filme>> {
