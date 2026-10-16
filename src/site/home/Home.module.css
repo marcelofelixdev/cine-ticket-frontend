@@ -1,0 +1,550 @@
+.destaques {
+  margin-bottom: 36px;
+}
+
+.cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-bottom: 14px;
+}
+
+.cabecalho p {
+  margin: 0;
+  font-size: 15px;
+}
+
+.carregando {
+  display: grid;
+  place-items: center;
+  height: 320px;
+  color: var(--papel);
+  background: var(--grafite);
+  border-radius: 18px;
+}
+
+/* ---------- Rolo de destaques ---------- */
+
+.palco {
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  background: var(--grafite);
+  border-top: 8px solid var(--mostarda);
+  border-radius: 18px;
+}
+
+.cortina {
+  flex: 0 0 26px;
+  background: repeating-linear-gradient(90deg, var(--verde) 0 14px, #245c46 14px 28px);
+}
+
+.rolo {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 10px;
+  min-width: 0;
+  height: 540px;
+  padding: 14px;
+}
+
+.quadro {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  background-color: var(--verde-claro);
+  background-position: center;
+  background-size: cover;
+  border-radius: 14px;
+  transition: flex-grow 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.quadro:hover,
+.quadro:focus-within,
+.rolo:not(:hover):not(:focus-within) .quadroAberto {
+  flex-grow: 8;
+}
+
+.fechado {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 0;
+  color: var(--papel);
+  background: rgb(20 20 20 / 62%);
+  transition: opacity 0.25s;
+}
+
+.vertical {
+  max-height: calc(100% - 48px);
+  overflow: hidden;
+  font-family: var(--fonte-display);
+  font-size: 24px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.aberto {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 28px;
+  color: var(--papel);
+  background: linear-gradient(180deg, transparent 5%, rgb(20 20 20 / 92%) 50%);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.quadro:hover .aberto,
+.quadro:focus-within .aberto {
+  transition-delay: 0.35s;
+}
+
+.quadro:hover .aberto,
+.quadro:focus-within .aberto,
+.rolo:not(:hover):not(:focus-within) .quadroAberto .aberto {
+  opacity: 1;
+}
+
+.quadro:hover .fechado,
+.quadro:focus-within .fechado,
+.rolo:not(:hover):not(:focus-within) .quadroAberto .fechado {
+  opacity: 0;
+}
+
+.abertoTexto {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 660px;
+  overflow-wrap: break-word;
+}
+
+.linhaMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.tituloDestaque {
+  margin: 0;
+  font-family: var(--fonte-display);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 400;
+  line-height: 1.02;
+  color: var(--mostarda);
+}
+
+.sinopse {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.creditos {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.creditos dt {
+  font-weight: 800;
+  color: var(--mostarda);
+}
+
+.creditos dd {
+  margin: 0;
+}
+
+.horarios {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.ficha {
+  margin-left: 8px;
+  font-weight: 700;
+  color: var(--papel);
+}
+
+.ficha:hover {
+  color: var(--mostarda);
+}
+
+.pontos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.ponto {
+  width: 56px;
+  height: 44px;
+  padding: 19px 6px;
+  font: inherit;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+}
+
+.ponto b {
+  display: block;
+  height: 6px;
+  overflow: hidden;
+  background: var(--linha);
+  border-radius: 999px;
+}
+
+.ponto i {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--verde);
+}
+
+.pontoAtual i {
+  animation: encher 6s linear forwards;
+}
+
+@keyframes encher {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+/* Com o mouse ou o foco no rolo, a troca para; a barrinha fica cheia. */
+.palco:hover + .pontos .pontoAtual i,
+.palco:focus-within + .pontos .pontoAtual i {
+  width: 100%;
+  animation: none;
+}
+
+/* ---------- Dia e filtros ---------- */
+
+.controles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- Quadro do dia ---------- */
+
+.moldura {
+  margin-bottom: 44px;
+  padding: 16px;
+  background: var(--mostarda);
+  border-radius: 18px;
+}
+
+.quadroDoDia {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 26px;
+  background: var(--branco);
+  border-radius: 10px;
+}
+
+.quadroDoDia p {
+  margin: 0;
+}
+
+.subtitulo {
+  margin: 0;
+  font-family: var(--fonte-display);
+  font-size: clamp(28px, 3.5vw, 38px);
+  font-weight: 400;
+  color: var(--verde);
+}
+
+.legenda {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.linhaDoQuadro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--linha);
+}
+
+.filmeDoQuadro {
+  font-family: var(--fonte-display);
+  font-size: 24px;
+  color: var(--grafite);
+  text-decoration: none;
+}
+
+.filmeDoQuadro:hover {
+  color: var(--verde);
+  text-decoration: underline;
+}
+
+/* ---------- Grade de filmes ---------- */
+
+.secao {
+  margin-bottom: 52px;
+}
+
+.secao > .subtitulo {
+  margin-bottom: 16px;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px;
+}
+
+.cartao {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--branco);
+  border-radius: 18px;
+}
+
+.capa {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  aspect-ratio: 16 / 10;
+  padding: 16px 18px;
+  color: var(--papel);
+  text-decoration: none;
+  background-color: var(--verde);
+  background-position: center;
+  background-size: cover;
+  isolation: isolate;
+}
+
+.capa::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: '';
+  background: linear-gradient(180deg, rgb(20 20 20 / 10%) 30%, rgb(20 20 20 / 85%));
+}
+
+.capa > :first-child {
+  align-self: flex-start;
+}
+
+.capa:hover {
+  color: var(--mostarda);
+}
+
+.capaTitulo {
+  font-family: var(--fonte-display);
+  font-size: 30px;
+  line-height: 1.05;
+}
+
+.cartaoCorpo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 18px 18px;
+  font-size: 14px;
+}
+
+.semSessao {
+  color: var(--texto-suave);
+}
+
+/* ---------- Em breve ---------- */
+
+.gradeBreve {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.breve {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  padding: 12px;
+  color: var(--grafite);
+  text-decoration: none;
+  background: var(--branco);
+  border-radius: 14px;
+}
+
+.breve:hover {
+  color: var(--verde);
+}
+
+.posterBreve {
+  flex: 0 0 74px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  background: var(--verde-claro);
+  border-radius: 8px;
+}
+
+.breveTexto {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.breveTitulo {
+  font-family: var(--fonte-display);
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.estreia {
+  align-self: flex-start;
+  padding: 3px 10px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--papel);
+  background: var(--verde);
+  border-radius: 999px;
+}
+
+/* ---------- Cinemas ---------- */
+
+.cinemas {
+  padding-top: 28px;
+  border-top: 2px dashed var(--linha);
+}
+
+.gradeCinemas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.cinema {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 18px 20px;
+  font-size: 15px;
+  background: var(--branco);
+  border-radius: 14px;
+}
+
+.cinemaNome {
+  font-family: var(--fonte-display);
+  font-size: 24px;
+}
+
+.cinemaAtual {
+  font-size: 14px;
+  color: var(--verde);
+}
+
+.trocar {
+  padding: 0;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--verde);
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+@media (max-width: 760px) {
+  .rolo {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .cortina {
+    flex-basis: 12px;
+  }
+
+  .quadro {
+    flex: none;
+    height: 84px;
+    transition: height 0.45s;
+  }
+
+  .quadro:hover,
+  .quadro:focus-within,
+  .rolo:not(:hover):not(:focus-within) .quadroAberto {
+    height: 560px;
+  }
+
+  .fechado {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 14px;
+    padding: 0 20px;
+  }
+
+  .vertical {
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
+
+  .aberto {
+    padding: 20px;
+  }
+
+  .quadroDoDia {
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quadro,
+  .aberto,
+  .fechado {
+    transition: none;
+  }
+
+  .pontoAtual i {
+    width: 100%;
+    animation: none;
+  }
+}

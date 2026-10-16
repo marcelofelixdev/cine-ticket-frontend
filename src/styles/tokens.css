@@ -1,0 +1,28 @@
+/*
+ * Cores, fontes e medidas da direção visual "Matinê". Todo componente usa estas
+ * variáveis: o modo noite (futuro) é só outro conjunto de valores para elas.
+ */
+:root {
+  --verde: #1e4d3a;
+  --verde-claro: #2f6b52;
+  --mostarda: #e9b949;
+  --grafite: #2b2b2b;
+  --papel: #f7f7f2;
+  --branco: #ffffff;
+  --linha: #cfcfc4;
+  --cinza-claro: #e4e4dc;
+  --texto-suave: #6f6f66;
+  --erro: #b3261e;
+  --sucesso: #0b7a3b;
+
+  --fonte-display: 'DM Serif Display', Georgia, serif;
+  --fonte-texto: 'Karla', system-ui, sans-serif;
+
+  /* Painel: estilo de sistema antigo */
+  --painel-fundo: #d8d8d0;
+  --painel-janela: #f4f4ef;
+  --painel-borda: #8a8a80;
+  --painel-borda-suave: #a8a89e;
+  --painel-linha: #c8c8be;
+  --painel-fonte: Tahoma, Verdana, 'Segoe UI', sans-serif;
+}

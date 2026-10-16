@@ -1,0 +1,372 @@
+/* Painel no estilo de sistema antigo: cinza, bordas finas, fonte do sistema. */
+.painel {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--painel-fundo);
+  color: var(--grafite);
+  font-family: var(--painel-fonte);
+  font-size: 14px;
+}
+
+.topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+  background: var(--verde);
+  color: var(--papel);
+}
+
+.logo {
+  font-size: 24px;
+}
+
+.local {
+  font-size: 13px;
+  border-left: 1px solid var(--verde-claro);
+  padding-left: 14px;
+}
+
+.espaco {
+  flex-grow: 1;
+}
+
+.usuario {
+  font-size: 13px;
+}
+
+.abas {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 10px;
+  background: var(--cinza-claro);
+  border-bottom: 1px solid var(--painel-borda);
+}
+
+.aba {
+  margin-top: 4px;
+  padding: 9px 14px;
+  color: var(--grafite);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-bottom: 0;
+}
+
+.aba:hover {
+  background: var(--painel-janela);
+}
+
+.abaAtiva {
+  composes: aba;
+  font-weight: 700;
+  background: var(--painel-janela);
+  border-color: var(--painel-borda);
+}
+
+.conteudo {
+  flex-grow: 1;
+  padding: 12px;
+}
+
+.rodape {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 4px 12px;
+  font-size: 12px;
+  background: var(--cinza-claro);
+  border-top: 1px solid var(--painel-borda);
+}
+
+.janela {
+  background: var(--painel-janela);
+  border: 1px solid var(--painel-borda);
+  box-shadow: inset 1px 1px 0 var(--branco);
+}
+
+.janelaTitulo {
+  margin: 0;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-weight: 700;
+  background: var(--verde);
+  color: var(--papel);
+}
+
+.janelaCorpo {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.botao {
+  font: inherit;
+  font-size: 13px;
+  min-height: 32px;
+  padding: 5px 12px;
+  color: var(--grafite);
+  background: var(--cinza-claro);
+  border: 1px solid var(--texto-suave);
+  box-shadow: inset 1px 1px 0 var(--branco);
+  cursor: pointer;
+}
+
+.botaoPrincipal {
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  min-height: 44px;
+  padding: 8px 14px;
+  color: var(--grafite);
+  background: var(--mostarda);
+  border: 1px solid var(--grafite);
+  cursor: pointer;
+}
+
+.botaoPrincipal:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.campo input,
+.campo textarea {
+  font: inherit;
+  min-height: 34px;
+  padding: 5px 8px;
+  background: var(--branco);
+  border: 1px solid var(--painel-borda);
+}
+
+.erroDoCampo {
+  color: var(--erro);
+  font-size: 12px;
+}
+
+.alerta {
+  margin: 0;
+  padding: 8px 10px;
+  color: var(--erro);
+  background: #fdecea;
+  border: 1px solid var(--erro);
+  font-size: 13px;
+}
+
+/* Tela de login: uma janela no meio da tela. */
+.login {
+  composes: painel;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.loginJanela {
+  composes: janela;
+  width: 100%;
+  max-width: 380px;
+}
+
+.loginMarca {
+  display: flex;
+  justify-content: center;
+  padding: 18px 12px 10px;
+  background: var(--verde);
+}
+
+.loginMarca .logo {
+  font-size: 32px;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: var(--branco);
+}
+
+.tabela th {
+  padding: 6px 8px;
+  text-align: left;
+  font-weight: 700;
+  background: var(--cinza-claro);
+  border: 1px solid var(--painel-borda-suave);
+}
+
+.tabela td {
+  padding: 6px 8px;
+  border: 1px solid var(--painel-linha);
+  vertical-align: middle;
+}
+
+.tabela tbody tr:nth-child(even) td {
+  background: var(--papel);
+}
+
+.rolagem {
+  overflow-x: auto;
+}
+
+.dica {
+  margin: 0;
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+.aviso {
+  margin: 0;
+  padding: 8px 10px;
+  font-size: 13px;
+  background: #fff6d6;
+  border: 1px solid #c9a227;
+}
+
+.sucesso {
+  margin: 0;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--sucesso);
+  background: #e7f4ec;
+  border: 1px solid var(--sucesso);
+}
+
+.navegacaoDia {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.navegacaoDia input {
+  font: inherit;
+  min-height: 32px;
+  padding: 3px 6px;
+  border: 1px solid var(--painel-borda);
+}
+
+.confirmacao {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.botaoPerigo {
+  composes: botao;
+  font-weight: 700;
+  color: var(--branco);
+  background: var(--erro);
+  border-color: #7a1a14;
+  box-shadow: none;
+}
+
+.colunas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.colunaLarga {
+  flex: 999 1 640px;
+  min-width: 0;
+}
+
+.colunaEstreita {
+  flex: 1 1 300px;
+  min-width: 280px;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.duasColunas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.campo select {
+  font: inherit;
+  min-height: 34px;
+  padding: 4px 6px;
+  background: var(--branco);
+  border: 1px solid var(--painel-borda);
+}
+
+.barra {
+  display: inline-block;
+  width: 90px;
+  height: 10px;
+  margin-right: 6px;
+  vertical-align: middle;
+  background: var(--branco);
+  border: 1px solid var(--texto-suave);
+}
+
+.barra > span {
+  display: block;
+  height: 100%;
+  background: var(--verde);
+}
+
+.barraCheia > span {
+  background: var(--erro);
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.poster {
+  width: 36px;
+  height: 54px;
+  object-fit: cover;
+  background: var(--cinza-claro);
+  display: block;
+}
+
+.paginacao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 8px 10px;
+  font-size: 13px;
+  border: 1px solid var(--painel-borda-suave);
+}
+
+.grupo legend {
+  padding: 0 4px;
+  font-weight: 700;
+}
+
+.seletorDeCinema {
+  font: inherit;
+  min-height: 28px;
+  padding: 2px 4px;
+  color: var(--grafite);
+  background: var(--branco);
+  border: 1px solid var(--verde-claro);
+}

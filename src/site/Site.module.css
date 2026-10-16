@@ -1,0 +1,299 @@
+.site {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--papel);
+}
+
+/* ---------- Cabeçalho ---------- */
+
+.topo {
+  background: var(--verde);
+  color: var(--papel);
+}
+
+.topoConteudo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 32px 8px;
+}
+
+.marca {
+  font-size: 38px;
+  text-decoration: none;
+}
+
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  gap: 22px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.menu a {
+  color: var(--papel);
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  padding: 4px 0;
+}
+
+.menu a:hover,
+.menu a[aria-current='page'] {
+  color: var(--papel);
+  border-bottom-color: var(--mostarda);
+}
+
+.escolhas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.escolhas label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.escolhas select {
+  font: inherit;
+  font-weight: 500;
+  min-height: 40px;
+  max-width: 220px;
+  padding: 8px 14px;
+  color: var(--grafite);
+  background: var(--papel);
+  border: 0;
+  border-radius: 999px;
+}
+
+.entrar {
+  padding: 11px 22px;
+  font-weight: 800;
+  color: var(--grafite);
+  text-decoration: none;
+  background: var(--mostarda);
+  border-radius: 999px;
+}
+
+.entrar:hover {
+  color: var(--grafite);
+  background: var(--papel);
+}
+
+/* Borda recortada como a de um toldo de cinema antigo. */
+.recorte {
+  height: 18px;
+  background: radial-gradient(circle at 12px 0, var(--verde) 12px, transparent 12.5px) repeat-x;
+  background-size: 24px 18px;
+}
+
+.falha {
+  max-width: 1200px;
+  margin: 16px auto 0;
+  padding: 12px 16px;
+  color: var(--erro);
+}
+
+/* ---------- Página ---------- */
+
+.pagina {
+  flex-grow: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 26px 32px 48px;
+}
+
+.titulo {
+  margin: 0;
+  font-family: var(--fonte-display);
+  font-size: clamp(34px, 5vw, 50px);
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--verde);
+}
+
+/* ---------- Rodapé ---------- */
+
+.rodape {
+  background: var(--verde);
+  color: var(--papel);
+}
+
+.rodapeConteudo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 32px;
+  font-size: 14px;
+}
+
+.rodapeConteudo a {
+  color: var(--papel);
+}
+
+.rodapeLogo {
+  font-size: 24px;
+}
+
+.tmdb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tmdbSelo {
+  padding: 3px 8px;
+  font-weight: 800;
+  color: var(--verde);
+  background: var(--papel);
+  border-radius: 6px;
+}
+
+/* ---------- Classificação indicativa (ClassInd) ---------- */
+
+.classificacao {
+  display: inline-block;
+  min-width: 28px;
+  padding: 2px 7px;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--branco);
+  border-radius: 6px;
+}
+
+.classeL {
+  background: #0b7a3b;
+}
+
+.classe10 {
+  background: #0f6db0;
+}
+
+.classe12 {
+  color: #1d1815;
+  background: #f8c411;
+}
+
+.classe14 {
+  background: #b8530f;
+}
+
+.classe16 {
+  background: #c62424;
+}
+
+.classe18 {
+  background: #1d1815;
+}
+
+/* ---------- Horário da sessão ---------- */
+
+.horario,
+.horarioClaro {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  min-height: 40px;
+  padding: 7px 13px;
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+  border-radius: 999px;
+}
+
+.horario {
+  color: var(--verde);
+  border: 2px solid var(--verde);
+}
+
+.horario:hover {
+  color: var(--papel);
+  background: var(--verde);
+}
+
+.horarioClaro {
+  color: var(--grafite);
+  background: var(--papel);
+}
+
+.horarioClaro:hover {
+  color: var(--grafite);
+  background: var(--mostarda);
+}
+
+.horario strong,
+.horarioClaro strong {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.horario span,
+.horarioClaro span {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ---------- Pílulas (dia e filtros) ---------- */
+
+.dias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pilula {
+  min-height: 44px;
+  padding: 8px 16px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--verde);
+  cursor: pointer;
+  background: var(--branco);
+  border: 2px solid var(--verde);
+  border-radius: 999px;
+}
+
+.pilulaDia {
+  color: var(--grafite);
+  background: var(--mostarda);
+  border-color: var(--mostarda);
+}
+
+.pilulaAtiva {
+  color: var(--papel);
+  background: var(--verde);
+}
+
+@media (max-width: 760px) {
+  .topoConteudo,
+  .rodapeConteudo,
+  .pagina {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .marca {
+    font-size: 30px;
+  }
+
+  .escolhas select {
+    max-width: 160px;
+  }
+}
