@@ -169,6 +169,20 @@
   margin: 0;
 }
 
+.contagem {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--verde);
+}
+
+.limite {
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--erro);
+  background: #fdecea;
+  border-radius: 10px;
+}
+
 .lugar {
   display: flex;
   flex-direction: column;

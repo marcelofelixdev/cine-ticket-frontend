@@ -46,17 +46,28 @@ function Escolha({ sessao, mapa }: { sessao: SessaoPublica; mapa: MapaDaSala }) 
   const livres = new Set(mapa.assentos.filter((a) => a.status === 'LIVRE').map((a) => a.id))
   // Volta do login com a escolha guardada; lugares que deixaram de estar livres saem.
   const [lugares, setLugares] = useState<LugarEscolhido[]>(() =>
-    lerEscolha(sessao.id).filter((l) => livres.has(l.seatId)),
+    lerEscolha(sessao.id)
+      .filter((l) => livres.has(l.seatId))
+      .slice(0, mapa.maxLugaresPorPedido),
   )
   const selecionados = new Set(lugares.map((l) => l.seatId))
+  const limite = mapa.maxLugaresPorPedido
+  const noLimite = lugares.length >= limite
   const total = lugares.reduce((soma, l) => soma + precoDoTipo(sessao, l.tipo), 0)
 
+  const [avisoDeLimite, setAvisoDeLimite] = useState(false)
+
   function alternar(assento: Assento) {
-    setLugares((atuais) =>
-      atuais.some((l) => l.seatId === assento.id)
-        ? atuais.filter((l) => l.seatId !== assento.id)
-        : [...atuais, { seatId: assento.id, rotulo: rotulo(assento), tipo: 'INTEIRA' }],
-    )
+    if (selecionados.has(assento.id)) {
+      setAvisoDeLimite(false)
+      setLugares((atuais) => atuais.filter((l) => l.seatId !== assento.id))
+      return
+    }
+    if (noLimite) {
+      setAvisoDeLimite(true)
+      return
+    }
+    setLugares((atuais) => [...atuais, { seatId: assento.id, rotulo: rotulo(assento), tipo: 'INTEIRA' }])
   }
 
   function mudar(seatId: number, mudanca: Partial<LugarEscolhido>) {
@@ -110,6 +121,14 @@ function Escolha({ sessao, mapa }: { sessao: SessaoPublica; mapa: MapaDaSala }) 
         <h2 id="seu-pedido" className={styles.subtitulo}>
           Seu pedido
         </h2>
+        <p className={styles.contagem} aria-live="polite">
+          {lugares.length} de até {limite} lugares por compra
+        </p>
+        {avisoDeLimite && (
+          <p className={styles.limite} role="alert">
+            Você já escolheu {limite} lugares, o máximo por compra. Desmarque um para trocar de lugar.
+          </p>
+        )}
         {lugares.length === 0 && <p>Escolha seus lugares no mapa.</p>}
         {lugares.map((l) => (
           <fieldset key={l.seatId} className={styles.lugar}>

@@ -185,6 +185,7 @@ describe('escolha de lugares', () => {
           cadeirasPorFila: 2,
           corredores: [1],
           meiasRestantes: 1,
+          maxLugaresPorPedido: 2,
           assentos: [
             { id: 1, fila: 'A', numero: 1, status: 'OCUPADO' },
             { id: 2, fila: 'A', numero: 2, status: 'LIVRE' },
@@ -207,6 +208,10 @@ describe('escolha de lugares', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'A-2, livre' }))
     await userEvent.click(screen.getByRole('button', { name: 'B-1, livre' }))
+    // O limite vem da API: o terceiro lugar não entra.
+    await userEvent.click(screen.getByRole('button', { name: 'B-2, livre' }))
+    expect(screen.getByRole('alert')).toHaveTextContent('Você já escolheu 2 lugares, o máximo por compra.')
+    expect(screen.getByText('2 de até 2 lugares por compra')).toBeInTheDocument()
     const lugarA2 = screen.getByRole('group', { name: 'A-2' })
     await userEvent.selectOptions(within(lugarA2).getByLabelText('Tipo de ingresso'), 'MEIA_ESTUDANTE')
     await userEvent.type(within(lugarA2).getByLabelText('Nº da carteira de estudante'), '123456789')

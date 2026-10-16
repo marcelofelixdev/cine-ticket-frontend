@@ -10,6 +10,8 @@ export interface MapaDaSala {
   cadeirasPorFila: number
   corredores: number[]
   meiasRestantes: number
+  /** Quantos lugares cabem numa compra online (a API decide). */
+  maxLugaresPorPedido: number
   assentos: Assento[]
 }
 
