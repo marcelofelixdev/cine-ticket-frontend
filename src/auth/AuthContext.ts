@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react'
+import type { NovaConta } from './authApi'
 import type { Usuario } from './types'
 
 export type EstadoDaSessao =
@@ -9,6 +10,8 @@ export type EstadoDaSessao =
 export interface Auth {
   sessao: EstadoDaSessao
   entrar: (email: string, senha: string) => Promise<Usuario>
+  cadastrar: (conta: NovaConta) => Promise<Usuario>
+  atualizarPerfil: (dados: { nome?: string; dataNascimento?: string }) => Promise<Usuario>
   sair: () => Promise<void>
 }
 

@@ -1,0 +1,153 @@
+.pagina {
+  display: flex;
+  justify-content: center;
+}
+
+.cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 480px;
+  padding: 28px;
+  background: var(--branco);
+  border-top: 8px solid var(--mostarda);
+  border-radius: 18px;
+}
+
+.cartao p {
+  margin: 0;
+}
+
+.aviso {
+  padding: 10px 14px;
+  font-weight: 700;
+  color: var(--verde);
+  background: #f3e3b4;
+  border-radius: 10px;
+}
+
+.abas {
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  background: var(--cinza-claro);
+  border-radius: 999px;
+}
+
+.abas button {
+  flex: 1;
+  min-height: 42px;
+  font: inherit;
+  font-weight: 800;
+  color: var(--grafite);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+}
+
+.abas button[aria-selected='true'] {
+  color: var(--papel);
+  background: var(--verde);
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.campo input {
+  min-height: 46px;
+  padding: 10px 14px;
+  font: inherit;
+  font-weight: 500;
+  background: var(--papel);
+  border: 2px solid var(--linha);
+  border-radius: 10px;
+}
+
+.campo input:focus {
+  border-color: var(--verde);
+}
+
+.erroDoCampo {
+  font-size: 13px;
+  color: var(--erro);
+}
+
+.dica {
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+.alerta,
+.sucesso {
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 10px;
+}
+
+.alerta {
+  color: var(--erro);
+  background: #fdecea;
+}
+
+.sucesso {
+  color: var(--sucesso);
+  background: #e7f4ec;
+}
+
+.principal,
+.secundario {
+  min-height: 50px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.principal {
+  color: var(--grafite);
+  background: var(--mostarda);
+  border: 0;
+}
+
+.principal:hover:not(:disabled) {
+  color: var(--papel);
+  background: var(--verde);
+}
+
+.principal:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.secundario {
+  color: var(--verde);
+  background: transparent;
+  border: 2px solid var(--verde);
+}
+
+.atalhos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-weight: 700;
+}
+
+.equipe {
+  padding-top: 12px;
+  font-size: 14px;
+  border-top: 1px dashed var(--linha);
+}

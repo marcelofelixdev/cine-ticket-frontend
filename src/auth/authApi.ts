@@ -21,6 +21,25 @@ export async function restore(): Promise<Usuario | null> {
   return (await refreshAccessToken()) ? me() : null
 }
 
+export interface NovaConta {
+  nome: string
+  email: string
+  senha: string
+  /** AAAA-MM-DD; opcional, usada na meia-entrada 60+. */
+  dataNascimento?: string
+}
+
+/** Cria a conta de cliente (rota pública) e já entra com ela. */
+export async function cadastrar(conta: NovaConta): Promise<Usuario> {
+  await apiFetch('/users', { method: 'POST', json: conta })
+  return login(conta.email, conta.senha)
+}
+
+/** Atualização parcial do próprio perfil: campos ausentes não mudam. */
+export function atualizarPerfil(dados: { nome?: string; dataNascimento?: string }): Promise<Usuario> {
+  return apiFetch<Usuario>('/users/me', { method: 'PATCH', json: dados })
+}
+
 export async function logout(): Promise<void> {
   try {
     await apiFetch<void>('/auth/logout', { method: 'POST' })

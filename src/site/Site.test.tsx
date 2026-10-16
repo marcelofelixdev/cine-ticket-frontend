@@ -6,7 +6,7 @@ import { setAccessToken } from '../api/client'
 import { AppRoutes } from '../AppRoutes'
 import { AuthProvider } from '../auth/AuthProvider'
 import { hoje, somarDias } from '../lib/formato'
-import { fakeApi, json } from '../test/fakeApi'
+import { fakeApi, json, ultimoCorpo } from '../test/fakeApi'
 
 const pagina = <T,>(content: T[]) => json({ content, page: { size: 50, number: 0, totalElements: content.length, totalPages: 1 } })
 
@@ -221,5 +221,61 @@ describe('escolha de lugares', () => {
         { seatId: 3, rotulo: 'B-1', tipo: 'INTEIRA' },
       ],
     })
+  })
+})
+
+describe('conta do cliente', () => {
+  it('cria a conta (erros da API ao lado do campo), entra e volta para onde estava; depois edita o perfil', async () => {
+    const cliente = { id: 50, nome: 'Bia Rocha', email: 'bia@cliente.dev', roles: ['ROLE_USER'], dataNascimento: null, cinemaId: null }
+    let tentativas = 0
+    const api = fakeApi({
+      'POST /auth/refresh': () => json({ title: 'Não autenticado' }, 401),
+      'GET /cinemas/cidades': () => json([]),
+      'POST /users': () =>
+        ++tentativas === 1
+          ? json(
+              {
+                title: 'Dados inválidos',
+                detail: 'Um ou mais campos são inválidos.',
+                errors: [{ field: 'senha', message: 'A senha deve ter entre 12 e 72 caracteres' }],
+              },
+              422,
+            )
+          : json(cliente, 201),
+      'POST /auth/login': () => json({ token: 'tk', expiresIn: 900 }),
+      'GET /users/me': () => json(cliente),
+      'PATCH /users/me': () => json({ ...cliente, nome: 'Bia R.', dataNascimento: '1950-03-01' }),
+    })
+    render(
+      <MemoryRouter initialEntries={[{ pathname: '/entrar', state: { de: '/minha-conta' } }]}>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByText('Entre ou crie sua conta para continuar a compra.')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('tab', { name: 'Criar conta' }))
+    await userEvent.type(screen.getByLabelText('Nome'), 'Bia Rocha')
+    await userEvent.type(screen.getByLabelText('E-mail'), 'bia@cliente.dev')
+    await userEvent.type(screen.getByLabelText('Senha'), 'curta')
+    await userEvent.click(screen.getByRole('button', { name: 'Criar conta e entrar' }))
+    expect(await screen.findByText('A senha deve ter entre 12 e 72 caracteres')).toBeInTheDocument()
+
+    // O erro da API fica dentro do rótulo do campo.
+    await userEvent.clear(screen.getByLabelText(/^Senha/))
+    await userEvent.type(screen.getByLabelText(/^Senha/), 'uma-senha-bem-longa')
+    await userEvent.click(screen.getByRole('button', { name: 'Criar conta e entrar' }))
+
+    expect(await screen.findByRole('heading', { name: 'Minha conta' })).toBeInTheDocument()
+    expect(ultimoCorpo(api, 'POST /users')).toEqual({ nome: 'Bia Rocha', email: 'bia@cliente.dev', senha: 'uma-senha-bem-longa' })
+    expect(screen.getByRole('link', { name: 'Olá, Bia' })).toBeInTheDocument()
+
+    await userEvent.clear(screen.getByLabelText('Nome'))
+    await userEvent.type(screen.getByLabelText('Nome'), 'Bia R.')
+    await userEvent.type(screen.getByLabelText('Data de nascimento'), '1950-03-01')
+    await userEvent.click(screen.getByRole('button', { name: 'Salvar' }))
+    expect(await screen.findByText('Dados salvos.')).toBeInTheDocument()
+    expect(ultimoCorpo(api, 'PATCH /users/me')).toEqual({ nome: 'Bia R.', dataNascimento: '1950-03-01' })
   })
 })

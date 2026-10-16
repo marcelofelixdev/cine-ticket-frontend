@@ -33,6 +33,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return usuario
   }, [])
 
+  const cadastrar = useCallback(async (conta: authApi.NovaConta) => {
+    const usuario = await authApi.cadastrar(conta)
+    setSessao({ status: 'logado', usuario })
+    return usuario
+  }, [])
+
+  const atualizarPerfil = useCallback(async (dados: { nome?: string; dataNascimento?: string }) => {
+    const usuario = await authApi.atualizarPerfil(dados)
+    setSessao({ status: 'logado', usuario })
+    return usuario
+  }, [])
+
   const sair = useCallback(async () => {
     try {
       await authApi.logout()
@@ -41,6 +53,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const auth = useMemo<Auth>(() => ({ sessao, entrar, sair }), [sessao, entrar, sair])
+  const auth = useMemo<Auth>(
+    () => ({ sessao, entrar, cadastrar, atualizarPerfil, sair }),
+    [sessao, entrar, cadastrar, atualizarPerfil, sair],
+  )
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>
 }
