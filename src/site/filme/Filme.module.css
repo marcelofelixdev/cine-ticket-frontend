@@ -168,17 +168,26 @@
   font-size: 15px;
 }
 
+.foto,
 .iniciais {
-  display: grid;
-  place-items: center;
   width: 72px;
   height: 72px;
   margin-bottom: 4px;
+  border-radius: 50%;
+}
+
+.foto {
+  object-fit: cover;
+  background: var(--cinza-claro);
+}
+
+.iniciais {
+  display: grid;
+  place-items: center;
   font-family: var(--fonte-display);
   font-size: 26px;
   color: var(--mostarda);
   background: var(--verde);
-  border-radius: 50%;
 }
 
 .cabecalhoSessoes {

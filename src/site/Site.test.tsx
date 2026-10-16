@@ -21,7 +21,10 @@ const filme = (id: number, titulo: string, extra: object = {}) => ({
   classificacao: '14',
   generos: ['Ficção científica'],
   diretor: 'Denis Villeneuve',
-  elenco: [{ nome: 'Zendaya', personagem: 'Chani' }],
+  elenco: [
+    { nome: 'Zendaya', personagem: 'Chani', fotoUrl: 'https://image.tmdb.org/t/p/w185/zendaya.jpg' },
+    { nome: 'Josh Brolin', personagem: 'Gurney Halleck', fotoUrl: null },
+  ],
   produtora: 'Legendary',
   trailerUrl: null,
   dataEstreia: null,
@@ -145,6 +148,10 @@ describe('ficha do filme', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Duna: Parte Dois' })).toBeInTheDocument()
     expect(screen.getByText('Em cartaz desde 29/02/2024')).toBeInTheDocument()
     expect(screen.getByText('Chani')).toBeInTheDocument()
+    // Com foto, a imagem; sem foto, as iniciais.
+    const elenco = screen.getByRole('region', { name: 'Elenco principal' })
+    expect(elenco.querySelector('img')).toHaveAttribute('src', 'https://image.tmdb.org/t/p/w185/zendaya.jpg')
+    expect(within(elenco).getByText('JB')).toBeInTheDocument()
 
     const sessao10 = await screen.findByRole('link', { name: /18:00/ })
     expect(sessao10).toHaveAttribute('href', '/sessoes/10')

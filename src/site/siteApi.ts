@@ -28,7 +28,7 @@ export interface Filme {
   classificacao: string | null
   generos: string[] | null
   diretor: string | null
-  elenco: Array<{ nome: string; personagem: string | null }> | null
+  elenco: Array<{ nome: string; personagem: string | null; fotoUrl?: string | null }> | null
   produtora: string | null
   trailerUrl: string | null
   dataEstreia: string | null

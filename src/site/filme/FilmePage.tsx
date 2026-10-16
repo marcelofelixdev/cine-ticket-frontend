@@ -101,9 +101,13 @@ function Ficha({ filme }: { filme: Filme }) {
               <ul className={styles.elenco}>
                 {filme.elenco.map((pessoa) => (
                   <li key={pessoa.nome}>
-                    <span className={styles.iniciais} aria-hidden="true">
-                      {iniciais(pessoa.nome)}
-                    </span>
+                    {pessoa.fotoUrl ? (
+                      <img src={pessoa.fotoUrl} alt="" className={styles.foto} loading="lazy" />
+                    ) : (
+                      <span className={styles.iniciais} aria-hidden="true">
+                        {iniciais(pessoa.nome)}
+                      </span>
+                    )}
                     <strong>{pessoa.nome}</strong>
                     {pessoa.personagem && <span>{pessoa.personagem}</span>}
                   </li>
