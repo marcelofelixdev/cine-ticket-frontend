@@ -9,9 +9,10 @@ import { NavegacaoDeDia } from '../comum/NavegacaoDeDia'
 import styles from '../Painel.module.css'
 import caixa from './Caixa.module.css'
 import type { SessaoDoDia } from '../comum/sessaoDoDia'
-import { mapaDeAssentos, sessoesDoDia, vender, type Venda } from './caixaApi'
+import { sessoesDoDia, vender, type Venda } from './caixaApi'
 import { imprimirIngresso } from './imprimir'
-import { MapaDeAssentos } from './MapaDeAssentos'
+import { mapaDaSala } from '../../api/sessoes'
+import { MapaDeAssentos } from '../../components/MapaDeAssentos'
 import { SessoesDoDia } from './SessoesDoDia'
 
 /** Limite da API por venda (BoxOfficeSaleRequestDTO). */
@@ -30,7 +31,7 @@ export function CaixaPage() {
   const sessoes = useCarregar((signal) => sessoesDoDia(dia, signal), dia)
   const [sessaoId, setSessaoId] = useState<number | null>(null)
   const mapa = useCarregar(
-    sessaoId === null ? null : (signal) => mapaDeAssentos(sessaoId, signal),
+    sessaoId === null ? null : (signal) => mapaDaSala(sessaoId, signal),
     String(sessaoId),
   )
   const [lugares, setLugares] = useState<LugarEscolhido[]>([])
@@ -102,6 +103,7 @@ export function CaixaPage() {
               selecionados={new Set(lugares.map((l) => l.assento.id))}
               bloqueado={!sessao.vendasAbertas}
               onAlternar={alternar}
+              estilos={caixa}
             />
           )}
         </div>

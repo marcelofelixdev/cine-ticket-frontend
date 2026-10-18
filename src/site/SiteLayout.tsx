@@ -89,7 +89,7 @@ export function SiteLayout() {
               </label>
             </div>
             {sessao.status === 'logado' ? (
-              <Link to="/meus-ingressos" className={styles.entrar}>
+              <Link to="/minha-conta" className={styles.entrar}>
                 Olá, {sessao.usuario.nome.split(' ')[0]}
               </Link>
             ) : (

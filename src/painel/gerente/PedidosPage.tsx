@@ -3,7 +3,7 @@ import { useCarregar } from '../../lib/useCarregar'
 import { Avisos } from '../comum/Avisos'
 import { BuscaNoTmdb } from '../comum/BuscaNoTmdb'
 import { NOME_DA_SITUACAO_DO_PEDIDO } from '../comum/painelApi'
-import { useAcao } from '../comum/useAcao'
+import { useAcao } from '../../lib/useAcao'
 import styles from '../Painel.module.css'
 import { pedidosDoCinema, pedirFilme } from './gerenteApi'
 

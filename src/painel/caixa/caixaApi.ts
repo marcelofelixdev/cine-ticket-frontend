@@ -1,18 +1,6 @@
 import { apiBlob, apiFetch } from '../../api/client'
-import type { Assento } from '../../lib/assentos'
 import type { FormaPagamento, TipoIngresso } from '../../lib/tipos'
 import type { SessaoDoDia } from '../comum/sessaoDoDia'
-
-export interface MapaDeAssentos {
-  sessionId: number
-  salaNome: string
-  totalAssentos: number
-  assentosLivres: number
-  cadeirasPorFila: number
-  corredores: number[]
-  meiasRestantes: number
-  assentos: Assento[]
-}
 
 export interface ItemDaVenda {
   seatId: number
@@ -54,9 +42,6 @@ export function sessoesDoDia(data: string, signal?: AbortSignal): Promise<Sessao
   return apiFetch(`/box-office/sessions?date=${data}`, { signal })
 }
 
-export function mapaDeAssentos(sessionId: number, signal?: AbortSignal): Promise<MapaDeAssentos> {
-  return apiFetch(`/sessions/${sessionId}/seats`, { signal })
-}
 
 export function vender(pedido: PedidoDeVenda): Promise<Venda> {
   return apiFetch('/box-office/sales', { method: 'POST', json: pedido })

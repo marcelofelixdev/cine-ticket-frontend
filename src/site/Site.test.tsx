@@ -6,7 +6,7 @@ import { setAccessToken } from '../api/client'
 import { AppRoutes } from '../AppRoutes'
 import { AuthProvider } from '../auth/AuthProvider'
 import { hoje, somarDias } from '../lib/formato'
-import { fakeApi, json } from '../test/fakeApi'
+import { fakeApi, json, ultimoCorpo } from '../test/fakeApi'
 
 const pagina = <T,>(content: T[]) => json({ content, page: { size: 50, number: 0, totalElements: content.length, totalPages: 1 } })
 
@@ -61,6 +61,7 @@ afterEach(() => {
   setAccessToken(null)
   vi.unstubAllGlobals()
   localStorage.clear()
+  sessionStorage.clear()
 })
 
 describe('vitrine', () => {
@@ -165,5 +166,121 @@ describe('ficha do filme', () => {
       'src',
       'https://www.youtube-nocookie.com/embed/Way9Dexny3w?autoplay=1',
     )
+  })
+})
+
+describe('escolha de lugares', () => {
+  it('marca lugares, escolhe o tipo com o preço da API e guarda a escolha para depois do login', async () => {
+    fakeApi({
+      'POST /auth/refresh': () => json({ title: 'Não autenticado' }, 401),
+      'GET /cinemas/cidades': () => json([{ cidade: 'São Paulo', uf: 'SP' }]),
+      'GET /cinemas': () => pagina([]),
+      'GET /sessions/10': () => json(sessao(10, 3, 'Duna: Parte Dois', '21:40')),
+      'GET /sessions/10/seats': () =>
+        json({
+          sessionId: 10,
+          salaNome: 'Sala 1',
+          totalAssentos: 4,
+          assentosLivres: 3,
+          cadeirasPorFila: 2,
+          corredores: [1],
+          meiasRestantes: 1,
+          maxLugaresPorPedido: 2,
+          assentos: [
+            { id: 1, fila: 'A', numero: 1, status: 'OCUPADO' },
+            { id: 2, fila: 'A', numero: 2, status: 'LIVRE' },
+            { id: 3, fila: 'B', numero: 1, status: 'LIVRE' },
+            { id: 4, fila: 'B', numero: 2, status: 'LIVRE' },
+          ],
+        }),
+    })
+    render(
+      <MemoryRouter initialEntries={['/sessoes/10']}>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByRole('button', { name: 'A-1, ocupado' })).toBeDisabled()
+    expect(screen.getByText('3 de 4 lugares livres')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Continuar para o pagamento' })).toBeDisabled()
+
+    await userEvent.click(screen.getByRole('button', { name: 'A-2, livre' }))
+    await userEvent.click(screen.getByRole('button', { name: 'B-1, livre' }))
+    // O limite vem da API: o terceiro lugar não entra.
+    await userEvent.click(screen.getByRole('button', { name: 'B-2, livre' }))
+    expect(screen.getByRole('alert')).toHaveTextContent('Você já escolheu 2 lugares, o máximo por compra.')
+    expect(screen.getByText('2 de até 2 lugares por compra')).toBeInTheDocument()
+    const lugarA2 = screen.getByRole('group', { name: 'A-2' })
+    await userEvent.selectOptions(within(lugarA2).getByLabelText('Tipo de ingresso'), 'MEIA_ESTUDANTE')
+    await userEvent.type(within(lugarA2).getByLabelText('Nº da carteira de estudante'), '123456789')
+    expect(screen.getByText('R$ 63,00', { exact: false })).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Continuar para o pagamento' }))
+    expect(await screen.findByRole('heading', { name: 'Entrar' })).toBeInTheDocument()
+    expect(JSON.parse(sessionStorage.getItem('cineticket.escolha') ?? '{}')).toEqual({
+      sessionId: 10,
+      lugares: [
+        { seatId: 2, rotulo: 'A-2', tipo: 'MEIA_ESTUDANTE', documentoMeia: '123456789' },
+        { seatId: 3, rotulo: 'B-1', tipo: 'INTEIRA' },
+      ],
+    })
+  })
+})
+
+describe('conta do cliente', () => {
+  it('cria a conta (erros da API ao lado do campo), entra e volta para onde estava; depois edita o perfil', async () => {
+    const cliente = { id: 50, nome: 'Bia Rocha', email: 'bia@cliente.dev', roles: ['ROLE_USER'], dataNascimento: null, cinemaId: null }
+    let tentativas = 0
+    const api = fakeApi({
+      'POST /auth/refresh': () => json({ title: 'Não autenticado' }, 401),
+      'GET /cinemas/cidades': () => json([]),
+      'POST /users': () =>
+        ++tentativas === 1
+          ? json(
+              {
+                title: 'Dados inválidos',
+                detail: 'Um ou mais campos são inválidos.',
+                errors: [{ field: 'senha', message: 'A senha deve ter entre 12 e 72 caracteres' }],
+              },
+              422,
+            )
+          : json(cliente, 201),
+      'POST /auth/login': () => json({ token: 'tk', expiresIn: 900 }),
+      'GET /users/me': () => json(cliente),
+      'PATCH /users/me': () => json({ ...cliente, nome: 'Bia R.', dataNascimento: '1950-03-01' }),
+    })
+    render(
+      <MemoryRouter initialEntries={[{ pathname: '/entrar', state: { de: '/minha-conta' } }]}>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByText('Entre ou crie sua conta para continuar a compra.')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('tab', { name: 'Criar conta' }))
+    await userEvent.type(screen.getByLabelText('Nome'), 'Bia Rocha')
+    await userEvent.type(screen.getByLabelText('E-mail'), 'bia@cliente.dev')
+    await userEvent.type(screen.getByLabelText('Senha'), 'curta')
+    await userEvent.click(screen.getByRole('button', { name: 'Criar conta e entrar' }))
+    expect(await screen.findByText('A senha deve ter entre 12 e 72 caracteres')).toBeInTheDocument()
+
+    // O erro da API fica dentro do rótulo do campo.
+    await userEvent.clear(screen.getByLabelText(/^Senha/))
+    await userEvent.type(screen.getByLabelText(/^Senha/), 'uma-senha-bem-longa')
+    await userEvent.click(screen.getByRole('button', { name: 'Criar conta e entrar' }))
+
+    expect(await screen.findByRole('heading', { name: 'Minha conta' })).toBeInTheDocument()
+    expect(ultimoCorpo(api, 'POST /users')).toEqual({ nome: 'Bia Rocha', email: 'bia@cliente.dev', senha: 'uma-senha-bem-longa' })
+    expect(screen.getByRole('link', { name: 'Olá, Bia' })).toBeInTheDocument()
+
+    await userEvent.clear(screen.getByLabelText('Nome'))
+    await userEvent.type(screen.getByLabelText('Nome'), 'Bia R.')
+    await userEvent.type(screen.getByLabelText('Data de nascimento'), '1950-03-01')
+    await userEvent.click(screen.getByRole('button', { name: 'Salvar' }))
+    expect(await screen.findByText('Dados salvos.')).toBeInTheDocument()
+    expect(ultimoCorpo(api, 'PATCH /users/me')).toEqual({ nome: 'Bia R.', dataNascimento: '1950-03-01' })
   })
 })

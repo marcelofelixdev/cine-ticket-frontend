@@ -3,7 +3,7 @@ import { dataCompleta } from '../../lib/formato'
 import { useCarregar } from '../../lib/useCarregar'
 import { Avisos } from '../comum/Avisos'
 import { NOME_DA_SITUACAO_DO_PEDIDO, type PedidoDeFilme, type SituacaoDoPedido } from '../comum/painelApi'
-import { useAcao, type Acao } from '../comum/useAcao'
+import { useAcao, type Acao } from '../../lib/useAcao'
 import styles from '../Painel.module.css'
 import { aprovarPedido, pedidosDaRede, recusarPedido } from './adminApi'
 

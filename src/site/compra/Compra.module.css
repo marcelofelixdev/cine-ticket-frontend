@@ -1,0 +1,285 @@
+.compra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 36px;
+}
+
+.sala {
+  flex: 999 1 640px;
+  min-width: 0;
+}
+
+.etapas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 700;
+  list-style: none;
+}
+
+.etapas li {
+  padding: 4px 12px;
+  color: var(--verde);
+  border: 2px solid var(--verde);
+  border-radius: 999px;
+}
+
+.etapas .etapaAtual {
+  color: var(--grafite);
+  background: var(--mostarda);
+  border-color: var(--mostarda);
+}
+
+.voltar {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.detalhes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 24px;
+  font-size: 16px;
+}
+
+.selo {
+  padding: 2px 10px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--papel);
+  background: var(--verde);
+  border-radius: 999px;
+}
+
+/* ---------- Mapa (classes usadas pelo MapaDeAssentos) ---------- */
+
+.tela {
+  width: 80%;
+  margin: 0 auto 22px;
+  padding: 8px;
+  font-family: var(--fonte-display);
+  font-size: 18px;
+  text-align: center;
+  letter-spacing: 0.2em;
+  color: var(--mostarda);
+  background: var(--grafite);
+  border-bottom: 6px solid var(--mostarda);
+  border-radius: 8px 8px 40% 40% / 8px 8px 18px 18px;
+}
+
+.mapa {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 4px 8px;
+}
+
+.fileira {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* Centraliza quando cabe; quando não cabe, começa na esquerda e rola (sem cortar a fila A-1). */
+  margin-inline: auto;
+}
+
+.letra {
+  width: 20px;
+  font-weight: 800;
+  text-align: center;
+  color: var(--verde);
+}
+
+.assento {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--verde);
+  cursor: pointer;
+  background: var(--branco);
+  border: 2px solid var(--verde);
+  border-radius: 50%;
+}
+
+.assento:hover:not(:disabled) {
+  background: #f3e3b4;
+}
+
+.assento[aria-pressed='true'] {
+  color: var(--grafite);
+  background: var(--mostarda);
+  border-color: var(--grafite);
+}
+
+.assento:disabled {
+  color: var(--texto-suave);
+  cursor: not-allowed;
+  background: var(--cinza-claro);
+  border-color: var(--linha);
+}
+
+.corredor {
+  margin-left: 26px;
+}
+
+.legenda {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+/* ---------- Pedido ---------- */
+
+.pedido {
+  position: sticky;
+  top: 16px;
+  display: flex;
+  flex: 1 1 320px;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 280px;
+  padding: 24px;
+  background: var(--branco);
+  border-radius: 18px;
+}
+
+.subtitulo {
+  margin: 0;
+  font-family: var(--fonte-display);
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--verde);
+}
+
+.pedido p {
+  margin: 0;
+}
+
+.contagem {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--verde);
+}
+
+.limite {
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--erro);
+  background: #fdecea;
+  border-radius: 10px;
+}
+
+.lugar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 2px solid var(--cinza-claro);
+  border-radius: 12px;
+}
+
+.lugar legend {
+  padding: 0 6px;
+  font-weight: 800;
+  color: var(--verde);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.campo select,
+.campo input {
+  min-height: 42px;
+  padding: 8px 12px;
+  font: inherit;
+  font-weight: 500;
+  background: var(--papel);
+  border: 2px solid var(--linha);
+  border-radius: 10px;
+}
+
+.dica {
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+.meias {
+  padding-top: 12px;
+  font-size: 14px;
+  border-top: 1px dashed var(--linha);
+}
+
+.total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 18px;
+}
+
+.total strong {
+  font-size: 28px;
+  color: var(--verde);
+}
+
+.continuar {
+  min-height: 52px;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--grafite);
+  cursor: pointer;
+  background: var(--mostarda);
+  border: 0;
+  border-radius: 999px;
+}
+
+.continuar:hover:not(:disabled) {
+  color: var(--papel);
+  background: var(--verde);
+}
+
+.continuar:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media (max-width: 760px) {
+  .pedido {
+    position: static;
+    min-width: 0;
+  }
+
+  .assento {
+    width: 32px;
+    height: 32px;
+    font-size: 11px;
+  }
+
+  .fileira {
+    gap: 4px;
+  }
+
+  .corredor {
+    margin-left: 14px;
+  }
+}

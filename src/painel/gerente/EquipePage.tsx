@@ -3,7 +3,7 @@ import { useCarregar } from '../../lib/useCarregar'
 import { Avisos } from '../comum/Avisos'
 import { CamposDeAcesso, TabelaDeEquipe } from '../comum/Equipe'
 import { ACESSO_VAZIO } from '../comum/painelApi'
-import { useAcao } from '../comum/useAcao'
+import { useAcao } from '../../lib/useAcao'
 import styles from '../Painel.module.css'
 import { cadastrarFuncionario, equipe } from './gerenteApi'
 
